@@ -1,0 +1,234 @@
+{
+  "generation_prompts": {
+    "freemark_generation": {
+      "system_role": "Expert medical illustration specialist and hair restoration visualization expert",
+      "base_instruction": "Generate DRAMATICALLY VISIBLE hair regrowth simulation with enhanced visibility optimization for half-bald patients",
+      "task": "Generate DRAMATICALLY VISIBLE hair regrowth simulation using coordinate-based targeting",
+      "timeframe_specs": {
+        "3months": {
+          "enhancement_multiplier": 1.4,
+          "maturity": "Early visible regrowth",
+          "prompt_addition": "ENHANCED 3-MONTH GENERATION: Show MAXIMUM VISIBLE hair growth - this is early stage restoration with {hair_density:.1%} base density + 1.4x visibility multiplier. Create THICK, PROMINENT hair strands for dramatic early results. Use ENHANCED density multiplier for clearly visible improvement. Focus on DRAMATIC VISIBILITY - patient needs to see clear progress. Generate hair that is CLEARLY DISTINGUISHABLE from balding areas.",
+          "visibility_requirement": "obvious_improvement",
+          "growth_characteristics": "clearly visible emerging hair strands with enhanced thickness and contrast"
+        },
+        "8months": {
+          "enhancement_multiplier": 1.6,
+          "maturity": "Mature established growth",
+          "prompt_addition": "ENHANCED 8-MONTH GENERATION: Show COMPLETE hair restoration - this is advanced stage with {hair_density:.1%} base density + 1.6x visibility multiplier. Create DENSE, FULL-BODIED hair with mature thickness and volume. Use MAXIMUM density multiplier for complete restoration appearance. Focus on COMPLETE RESTORATION - show full hair recovery results. Generate hair that COMPLETELY COVERS and TRANSFORMS balding areas.",
+          "visibility_requirement": "dramatic_transformation",
+          "growth_characteristics": "dramatically thick, full, established hair with maximum visual impact"
+        }
+      },
+      "hair_types": {
+        "Straight Hair": "Enhanced straight, smooth strands that lie flat against the scalp with increased thickness, natural shine, and optimal contrast against scalp",
+        "Wavy Hair": "Enhanced gentle waves with natural S-curve patterns, medium volume, increased thickness, and optimal scalp contrast",
+        "Curly Hair": "Enhanced defined curls with spiral patterns, natural volume, increased thickness, and dramatic scalp contrast",
+        "Coarse Hair": "Enhanced thick, strong strands with robust texture, maximum thickness, and optimal visibility",
+        "Fine Hair": "Enhanced delicate strands with subtle texture but increased visibility and optimal contrast"
+      },
+      "color_instructions": {
+        "#000000": "DRAMATIC jet black with enhanced natural highlights, optimal depth, and maximum scalp contrast for superior visibility",
+        "#654321": "Enhanced rich dark brown with warm undertones, natural depth, and optimal scalp contrast",
+        "#964B00": "Enhanced medium brown with natural variation, depth, and improved visibility against scalp",
+        "#808080": "Enhanced silver-gray with natural dimension, depth, and optimal contrast for mature appearance",
+        "#6F4E37": "Enhanced coffee brown with depth, warmth, and natural highlights for maximum visibility",
+        "#F0E2B6": "Enhanced light golden blonde with natural highlights, depth, and optimal scalp contrast"
+      },
+      "critical_rules": [
+        "ABSOLUTE BOUNDARY ENFORCEMENT: Generate hair ONLY within exact coordinate boundaries - ZERO EXCEPTIONS",
+        "PRIORITY-BASED ENHANCEMENT: Apply region-specific density multipliers for maximum visibility",
+        "AGGRESSIVE CONTRAST: Use optimal lighting and shadowing for maximum hair-scalp contrast",
+        "THICKNESS ENHANCEMENT: Generate visibly thicker strands for improved visibility in sparse areas",
+        "NATURAL INTEGRATION: Seamless blending with existing hair while maximizing visual impact",
+        "HALF-BALD OPTIMIZATION: Special attention to sparse hair regions with enhanced density",
+        "COORDINATE PRECISION: Every hair strand must originate within marked coordinate boundaries"
+      ],
+      "final_reminders": "CRITICAL: This is for {timeframe} hair restoration simulation. Generate DRAMATICALLY VISIBLE results that clearly show improvement from the original balding state. Focus on maximum visual impact while maintaining natural appearance."
+    },
+    "standard_generation": {
+      "base_template": "PROFESSIONAL HAIR RESTORATION - MASK-GUIDED HAIR GROWTH for {region} area",
+      "region_focus": {
+        "Hairline": {
+          "description": "Focus on hairline restoration with natural hairline patterns",
+          "enhancement_multiplier": 2.2,
+          "specific_instructions": "Follow natural hairline patterns, respect facial proportions and symmetry, create age-appropriate hairline shape"
+        },
+        "Crown": {
+          "description": "Focus on crown area restoration with radial growth patterns",
+          "enhancement_multiplier": 1.8,
+          "specific_instructions": "Create radial crown growth patterns, focus on central scalp coverage, maintain natural whorl patterns"
+        },
+        "Mid Crown": {
+          "description": "Focus on mid-crown area with targeted coverage",
+          "enhancement_multiplier": 1.9,
+          "specific_instructions": "Target mid-crown thinning areas, create natural transition zones, maintain scalp coverage continuity"
+        },
+        "Full Scalp": {
+          "description": "Comprehensive scalp coverage restoration",
+          "enhancement_multiplier": 2.0,
+          "specific_instructions": "Complete scalp restoration, maintain natural growth directions, create comprehensive coverage"
+        },
+        "FreeMark": {
+          "description": "User-defined marking areas with coordinate-based generation",
+          "enhancement_multiplier": 1.7,
+          "specific_instructions": "Follow user-marked areas precisely, respect coordinate boundaries, apply priority-based density"
+        }
+      },
+      "timeframe_specs": {
+        "3months": {
+          "enhancement_multiplier": 1.4,
+          "maturity": "Early visible regrowth stage",
+          "description": "AGGRESSIVE DENSITY for dramatic early results",
+          "visibility_focus": "DRAMATIC VISIBILITY - patient needs to see clear progress"
+        },
+        "8months": {
+          "enhancement_multiplier": 1.6,
+          "maturity": "Mature established growth stage", 
+          "description": "MATURE DENSITY for full restoration results",
+          "visibility_focus": "COMPLETE RESTORATION - show full hair recovery results"
+        }
+      }
+    }
+  },
+  "mask_interpretation": {
+    "density_contrast": {
+      "white_areas": {
+        "description": "MAXIMUM HAIR GROWTH ZONES (generate DENSE, THICK hair here)",
+        "density_percentage": 100,
+        "characteristics": [
+          "100% MAXIMUM hair generation in white pixels",
+          "FULL density and thickness in white regions", 
+          "DRAMATIC hair growth - make it VERY VISIBLE",
+          "PRIMARY HAIR RESTORATION TARGET AREAS"
+        ]
+      },
+      "black_areas": {
+        "description": "MODERATE HAIR GROWTH ZONES (generate LIGHT hair here)",
+        "density_percentage": "30-40",
+        "characteristics": [
+          "30-40% MODERATE hair generation in black pixels",
+          "LIGHTER density and thickness in black regions",
+          "SUBTLE hair growth - less visible than white areas", 
+          "SECONDARY HAIR RESTORATION AREAS"
+        ]
+      },
+      "contrast_rules": [
+        "Create STRONG difference between WHITE and BLACK areas",
+        "WHITE areas should have SIGNIFICANTLY MORE hair than black areas",
+        "WHITE = MAXIMUM growth, BLACK = MODERATE growth",
+        "Maintain CLEAR contrast - white should be obviously denser than black"
+      ]
+    }
+  },
+  "generation_instructions": {
+    "precise_steps": [
+      "EXAMINE Image 2 (the mask) - identify WHITE and BLACK regions for different hair densities",
+      "GENERATE MAXIMUM thick, dense hair in WHITE masked regions",
+      "GENERATE MODERATE lighter hair in BLACK masked regions (30-40% density)",
+      "CREATE natural color with shine - WHITE areas VERY VISIBLE, BLACK areas SUBTLE",
+      "ENSURE full density coverage in WHITE regions - GO AGGRESSIVE",
+      "ENSURE 30-40% density coverage in BLACK regions - MODERATE growth",
+      "MAINTAIN natural hair growth direction in BOTH WHITE and BLACK areas",
+      "CREATE CLEAR contrast - WHITE areas should have SIGNIFICANTLY more hair than BLACK",
+      "CRITICAL: Use Image 2 as DENSITY TEMPLATE - white = MAXIMUM hair, black = MODERATE hair",
+      "RESULT: WHITE areas look DRAMATICALLY improved, BLACK areas look MODERATELY improved"
+    ]
+  },
+  "success_factors": {
+    "critical_requirements": [
+      "Generate EXTREMELY VISIBLE, THICK hair growth in ALL WHITE masked areas",
+      "Generate MODERATE, LIGHTER hair growth in ALL BLACK masked areas", 
+      "Create STRONG difference between WHITE (maximum hair) and BLACK (moderate hair) regions",
+      "WHITE areas must have MAXIMUM hair density - make it VERY obvious",
+      "BLACK areas must have MODERATE hair density (30-40%) - subtle but present",
+      "Natural hair texture and realistic appearance in BOTH areas",
+      "Consistent hair coloring throughout new hair in BOTH regions",
+      "AGGRESSIVE density matching specification in WHITE areas",
+      "MODERATE density (30-40%) specification in BLACK areas",
+      "Professional hair restoration quality with CLEAR density contrast",
+      "BOTH areas get hair growth but WHITE areas get SIGNIFICANTLY MORE"
+    ]
+  },
+  "coordinate_based_generation": {
+    "priority_levels": {
+      "ultra_high": {
+        "area_threshold": 0.05,
+        "density_multiplier": 1.8,
+        "visibility_requirement": "MAXIMUM DRAMATIC IMPACT",
+        "description": "5%+ of image area - highest priority regions"
+      },
+      "high": {
+        "area_threshold": 0.02,
+        "density_multiplier": 1.5,
+        "visibility_requirement": "HIGH DRAMATIC IMPACT", 
+        "description": "2%+ of image area - high priority regions"
+      },
+      "medium": {
+        "area_threshold": 0.01,
+        "density_multiplier": 1.2,
+        "visibility_requirement": "CLEAR VISIBLE IMPROVEMENT",
+        "description": "1%+ of image area - medium priority regions"
+      },
+      "standard": {
+        "area_threshold": 0.0,
+        "density_multiplier": 1.0,
+        "visibility_requirement": "BASELINE IMPROVEMENT",
+        "description": "Below 1% of image area - standard priority regions"
+      }
+    },
+    "half_bald_optimization": {
+      "enabled": true,
+      "description": "Enhanced detection and processing for sparse hair regions",
+      "features": [
+        "Multi-method detection for varied lighting conditions",
+        "Extended threshold range for sparse markings",
+        "Enhanced morphological operations for region connectivity",
+        "Priority-based classification for optimal results",
+        "Adaptive padding for better coverage"
+      ]
+    }
+  },
+  "pattern_processing": {
+    "shape_based_patterns": {
+      "types": ["M Pattern", "Z Pattern", "Curve"],
+      "processing_method": "SHAPE-based pattern (M/Z/Curve)",
+      "steps": [
+        "Find pattern areas (non-black pixels)",
+        "Remove small noise/points by applying morphological operations",
+        "Clean up small points and noise",
+        "Dilate to create solid regions (remove gaps between points)",
+        "Fill holes to create solid white regions",
+        "Apply final smoothing",
+        "Make pattern areas white"
+      ]
+    },
+    "radius_based_patterns": {
+      "types": ["Crown", "Full Scalp", "Mid Crown"],
+      "processing_method": "RADIUS-based pattern (INNER WHITE)",
+      "steps": [
+        "Find the center of the pattern",
+        "Calculate radius based on pattern size with generous padding",
+        "Ensure minimum radius for visibility",
+        "Create elliptical/circular WHITE INNER area (hair growth region)",
+        "Apply fallback circular area if pattern detection fails"
+      ]
+    }
+  },
+  "api_configuration": {
+    "generation_config": {
+      "max_retries": 3,
+      "quality_check_delay": 2,
+      "generation_timeout": 120
+    },
+    "models": {
+      "primary": "gemini-2.5-flash-image-preview",
+      "fallback": []
+    },
+    "image_processing": {
+      "supported_formats": ["image/jpeg", "image/png", "image/webp"],
+      "max_image_size": "10MB",
+      "output_format": "PNG"
+    }
+  }
+}
