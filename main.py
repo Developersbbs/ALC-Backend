@@ -378,8 +378,8 @@ def format_coordinates_for_prompt(coordinates_data: dict, request_id: str = "") 
 def build_freemark_generation_prompt(coordinates_data: dict, timeframe: str, 
                                    hair_density: float, hair_type: str, 
                                    hair_color: str, request_id: str = "") -> str:
-    """ENHANCED: Build FreeMark prompt using prompts.json configuration for half-bald optimization"""
-    logger.info(f"PROMPT-{request_id}: Building enhanced FreeMark prompt for {timeframe} with half-bald optimization")
+    """ENHANCED: Build FreeMark prompt with FIXED 8-month enhancement"""
+    logger.info(f"PROMPT-{request_id}: Building FIXED FreeMark prompt for {timeframe}")
     
     # Load prompts configuration
     global PROMPTS_CONFIG
@@ -391,483 +391,452 @@ def build_freemark_generation_prompt(coordinates_data: dict, timeframe: str,
     # Get coordinate instructions with enhanced formatting
     coord_prompt = format_coordinates_for_prompt(coordinates_data, request_id)
     
-    # Enhanced timeframe-specific instructions from prompts.json
-    timeframe_specs = freemark_config.get("timeframe_specs", {})
-    if timeframe in ["3months", "3 months", "3 Months"]:
-        timeframe_key = "3months"
-        base_multiplier = 1.4  # From prompts.json
-        timeframe_desc = f"ENHANCED early regrowth with {hair_density:.1%} base density + {base_multiplier}x visibility multiplier"
-        growth_type = "clearly visible emerging hair strands with enhanced thickness and contrast"
-        visibility_req = "obvious_improvement"
-    else:
+    # FIXED: Enhanced 8-month multipliers - MORE AGGRESSIVE for 8-month
+    if timeframe in ["8months", "8 months", "8 Months"]:
         timeframe_key = "8months"
-        base_multiplier = 1.6  # From prompts.json
-        timeframe_desc = f"MAXIMUM mature growth with {hair_density:.1%} base density + {base_multiplier}x visibility multiplier"
-        growth_type = "dramatically thick, full, established hair with maximum visual impact"
-        visibility_req = "dramatic_transformation"
-    
-    # Enhanced hair color instructions from prompts.json
+        base_multiplier = 2.2  # INCREASED from 1.6 to 2.2 for more dramatic results
+        density_boost = 1.4    # Additional density boost for 8-month
+        timeframe_desc = f"MAXIMUM MATURE GROWTH with {hair_density:.1%} base density + {base_multiplier}x DRAMATIC enhancement multiplier"
+        growth_type = "EXTREMELY THICK, FULLY ESTABLISHED hair with MAXIMUM visual impact and COMPLETE coverage"
+        visibility_req = "COMPLETE_TRANSFORMATION"
+        maturity_level = "FULLY MATURE"
+    else:
+        timeframe_key = "3months"
+        base_multiplier = 1.4  # Keep 3-month moderate
+        density_boost = 1.1    # Moderate boost for 3-month
+        timeframe_desc = f"EARLY REGROWTH with {hair_density:.1%} base density + {base_multiplier}x visibility multiplier"
+        growth_type = "clearly visible emerging hair strands with moderate thickness"
+        visibility_req = "obvious_improvement"
+        maturity_level = "EARLY STAGE"
+
+    # Enhanced hair color instructions
     color_instructions = freemark_config.get("color_instructions", {})
     if hair_color in color_instructions:
         color_desc = color_instructions[hair_color]
     elif hair_color == "#000000":
-        color_desc = "DRAMATIC jet black with enhanced natural highlights, optimal depth, and maximum scalp contrast"
+        color_desc = "DRAMATIC jet black with enhanced natural highlights, optimal depth, and MAXIMUM scalp contrast"
     else:
         color_desc = f"enhanced {hair_color} with dramatic shine, depth, and optimal contrast for maximum visibility"
     
-    # Enhanced hair type descriptions from prompts.json
+    # Enhanced hair type descriptions
     hair_types = freemark_config.get("hair_types", {})
     if hair_type in hair_types:
         hair_type_desc = hair_types[hair_type]
     else:
         hair_type_desc = f"Enhanced {hair_type.lower()} with increased thickness, natural shine, and optimal contrast against scalp"
     
-    # Get system role and base instructions from prompts.json
-    system_role = freemark_config.get("system_role", "Expert medical illustration specialist")
-    base_instruction = freemark_config.get("base_instruction", "")
-    
-    # Build the enhanced prompt using prompts.json structure
-    prompt = f"""{system_role}
+    # FIXED: Build dramatically different prompts for 3m vs 8m
+    if timeframe_key == "8months":
+        # AGGRESSIVE 8-MONTH PROMPT
+        prompt = f"""EXPERT MEDICAL HAIR RESTORATION SPECIALIST - ADVANCED 8-MONTH SIMULATION
 
-TASK: {freemark_config.get('task', 'Generate DRAMATICALLY VISIBLE hair regrowth simulation')}
+CRITICAL MISSION: Generate MAXIMUM MATURE HAIR RESTORATION showing COMPLETE TRANSFORMATION
 
 {coord_prompt}
 
-ENHANCED TIMEFRAME SPECIFICATION:
-{timeframe_desc}
-Growth characteristics: {growth_type}
-Visibility requirement: {visibility_req}
+🔥 ADVANCED 8-MONTH SPECIFICATIONS (MAXIMUM ENHANCEMENT):
+✅ MATURITY LEVEL: {maturity_level} - Show COMPLETELY ESTABLISHED hair growth
+✅ DENSITY TARGET: {hair_density * 100:.1f}% + {base_multiplier}x DRAMATIC enhancement = {hair_density * base_multiplier * 100:.0f}% effective density
+✅ THICKNESS MULTIPLIER: {density_boost}x MAXIMUM thickness for mature hair strands
+✅ VISUAL IMPACT: {visibility_req} - Patient should see DRAMATIC difference from baseline
+✅ COVERAGE: COMPLETE and FULL coverage in all marked coordinate regions
+✅ HAIR MATURITY: Fully grown, thick, established strands with natural shine and movement
 
-ENHANCED GENERATION REQUIREMENTS:
-- Hair type: {hair_type_desc}
-- Hair color: {color_desc}
-- Base density: {hair_density:.1%} + {base_multiplier}x enhancement multiplier
-- Apply region-specific priority multipliers as specified in coordinate data
-- Growth pattern: Natural direction with enhanced visibility optimization
-- Preserve all facial features and skin texture from input image
-- Create seamless integration with existing scalp/hair texture
+🎯 HAIR CHARACTERISTICS FOR MAXIMUM 8-MONTH RESULTS:
+• Hair Type: {hair_type_desc} with MAXIMUM mature thickness
+• Hair Color: {color_desc} with deep, rich color saturation
+• Growth Pattern: FULLY NATURAL mature hair flow and direction
+• Strand Quality: THICK, HEALTHY, fully developed hair strands
+• Scalp Integration: SEAMLESS, natural hairline with NO visible scalp in growth areas
+• Visual Contrast: MAXIMUM contrast against scalp for dramatic visibility
 
-CRITICAL RULES FROM ENHANCED CONFIGURATION:
-"""
-    
-    # Add critical rules from prompts.json
-    critical_rules = freemark_config.get("critical_rules", [])
-    for rule in critical_rules:
-        prompt += f"\n• {rule}"
-    
-    # Add timeframe-specific prompt addition
-    if timeframe_key in timeframe_specs:
-        timeframe_addition = timeframe_specs[timeframe_key].get("prompt_addition", "")
-        if timeframe_addition:
-            # Format the prompt addition with current values
-            formatted_addition = timeframe_addition.format(
-                hair_density=hair_density,
-                timeframe=timeframe
-            )
-            prompt += f"\n\nTIMEFRAME-SPECIFIC ENHANCEMENT:\n{formatted_addition}"
-    
-    # Add final reminders from prompts.json
-    final_reminders = freemark_config.get("final_reminders", "")
-    if final_reminders:
-        formatted_reminders = final_reminders.format(timeframe=timeframe)
-        prompt += f"\n\n{formatted_reminders}"
-    
-    logger.info(f"PROMPT-{request_id}: Generated enhanced {len(prompt)} character prompt with half-bald optimization")
+🚀 CRITICAL 8-MONTH GENERATION RULES:
+1. Generate SIGNIFICANTLY MORE hair than 3-month results would show
+2. Show COMPLETE coverage in coordinate regions - NO sparse areas
+3. Create THICK, MATURE hair strands - not thin early growth
+4. Apply MAXIMUM density for realistic 8-month progression
+5. Show natural mature hair texture and movement
+6. Create DRAMATIC before/after difference - this is advanced restoration
+7. Maintain photographic realism while maximizing visual impact
+8. BOUNDARY COMPLIANCE: Stay within exact coordinate boundaries but MAXIMIZE density within them
+
+GENERATION COMMAND: Execute ADVANCED 8-MONTH mature hair restoration with MAXIMUM enhancement multipliers. Show COMPLETE TRANSFORMATION appropriate for established, mature hair growth at 8-month milestone."""
+
+    else:
+        # MODERATE 3-MONTH PROMPT (keep existing logic)
+        prompt = f"""EXPERT MEDICAL HAIR RESTORATION SPECIALIST - EARLY 3-MONTH SIMULATION
+
+MISSION: Generate MODERATE EARLY HAIR REGROWTH showing VISIBLE PROGRESS
+
+{coord_prompt}
+
+📈 EARLY 3-MONTH SPECIFICATIONS (MODERATE ENHANCEMENT):
+✅ MATURITY LEVEL: {maturity_level} - Show developing early hair growth
+✅ DENSITY TARGET: {hair_density * 100:.1f}% + {base_multiplier}x enhancement = {hair_density * base_multiplier * 100:.0f}% effective density
+✅ THICKNESS LEVEL: {density_boost}x moderate thickness for early growth
+✅ VISUAL IMPACT: {visibility_req} - Patient should see clear improvement
+✅ COVERAGE: Visible but not complete - show progress, not final results
+✅ HAIR MATURITY: Emerging, developing strands with early growth characteristics
+
+🎯 HAIR CHARACTERISTICS FOR 3-MONTH RESULTS:
+• Hair Type: {hair_type_desc} with moderate early thickness
+• Hair Color: {color_desc} with natural color development
+• Growth Pattern: Natural early hair direction and emerging flow
+• Strand Quality: DEVELOPING, visible but not fully mature strands
+• Scalp Integration: Natural integration with some scalp visibility
+• Visual Progress: CLEAR improvement but not final restoration
+
+⚡ CRITICAL 3-MONTH GENERATION RULES:
+1. Generate MODERATE hair growth - show progress but not completion
+2. Show developing coverage - visible improvement but not full density
+3. Create visible but developing hair strands
+4. Apply moderate enhancement for realistic 3-month progression
+5. Show early hair texture and emerging patterns
+6. Create VISIBLE improvement - clear progress from baseline
+7. This is EARLY STAGE - show promise, not final results
+8. BOUNDARY COMPLIANCE: Stay within coordinate boundaries with moderate density
+
+GENERATION COMMAND: Execute MODERATE 3-MONTH early hair restoration showing clear but developing progress."""
+
+    logger.info(f"PROMPT-{request_id}: Generated FIXED {timeframe} FreeMark prompt ({len(prompt)} chars)")
     return prompt
+def extract_image_from_response_simplified(response, request_id: str = ""):
+    """SIMPLIFIED: Extract image data from Gemini response"""
+    logger.info(f"EXTRACT-{request_id}: Extracting image from response")
+    
+    try:
+        # Method 1: Direct parts access
+        if hasattr(response, 'parts') and response.parts:
+            for i, part in enumerate(response.parts):
+                if hasattr(part, 'inline_data') and part.inline_data:
+                    if hasattr(part.inline_data, 'data'):
+                        return decode_image_data(part.inline_data.data, f"{request_id}-parts-{i}")
+        
+        # Method 2: Candidates access
+        if hasattr(response, 'candidates') and response.candidates:
+            for j, candidate in enumerate(response.candidates):
+                if hasattr(candidate, 'content') and candidate.content:
+                    if hasattr(candidate.content, 'parts'):
+                        for k, part in enumerate(candidate.content.parts):
+                            if hasattr(part, 'inline_data') and part.inline_data:
+                                if hasattr(part.inline_data, 'data'):
+                                    return decode_image_data(part.inline_data.data, f"{request_id}-candidate-{j}-{k}")
+        
+        # Method 3: Direct response data
+        if hasattr(response, 'data'):
+            return decode_image_data(response.data, f"{request_id}-direct")
+        
+        logger.warning(f"EXTRACT-{request_id}: No image data found in response structure")
+        
+        # Debug: Log response structure
+        logger.debug(f"EXTRACT-{request_id}: Response type: {type(response)}")
+        logger.debug(f"EXTRACT-{request_id}: Response attributes: {[attr for attr in dir(response) if not attr.startswith('_')]}")
+        
+        return None
+        
+    except Exception as e:
+        logger.error(f"EXTRACT-{request_id}: Error extracting image: {str(e)}")
+        return None
+
+def decode_image_data(data, context: str = ""):
+    """FIXED: Decode image data handling both string and bytes"""
+    try:
+        if isinstance(data, str):
+            # Base64 string
+            import base64
+            decoded = base64.b64decode(data)
+            logger.info(f"DECODE-{context}: Decoded base64 string to {len(decoded)} bytes")
+            return decoded
+        elif isinstance(data, bytes):
+            # Already bytes
+            logger.info(f"DECODE-{context}: Using direct bytes data ({len(data)} bytes)")
+            return data
+        else:
+            logger.warning(f"DECODE-{context}: Unknown data type: {type(data)}")
+            return None
+    except Exception as e:
+        logger.error(f"DECODE-{context}: Decode error: {str(e)}")
+        return None
 
 async def generate_freemark_hair(input_image_data: bytes, input_mime_type: str,
-                               coordinates_data: dict, timeframe: str, 
-                               hair_density: float, hair_type: str, 
-                               hair_color: str, request_id: str = ""):
-    """ENHANCED: FreeMark generation with fixed image extraction logic"""
-    logger.info(f"GEN-{request_id}: Starting enhanced FreeMark generation")
-    logger.info(f"  - Regions: {len(coordinates_data.get('regions', []))}")
-    logger.info(f"  - Timeframe: {timeframe}")
-    logger.info(f"  - Density: {hair_density * 100:.1f}%")
+                                     coordinates_data: dict, timeframe: str, 
+                                     hair_density: float, hair_type: str, 
+                                     hair_color: str, request_id: str = ""):
+    """FIXED: Simplified and more robust FreeMark generation"""
+    logger.info(f"GEN-{request_id}: Starting FIXED FreeMark generation")
     
-    # Build enhanced prompt using prompts.json configuration
-    prompt = build_freemark_generation_prompt(coordinates_data, timeframe, hair_density, hair_type, hair_color, request_id)
-    
-    # Create content for Gemini API - FIXED FORMAT
-    import base64
-    
-    # Convert bytes to base64 string for Gemini API
-    image_b64 = base64.b64encode(input_image_data).decode('utf-8')
-    
-    # FIXED: Use proper Gemini API content structure
-    content = [
-        {
-            "inline_data": {
-                "mime_type": input_mime_type,
-                "data": image_b64
-            }
-        },
-        prompt
-    ]
-    
-    # Try generation with multiple models and retries
-    max_retries = 3
-    models_to_try = ["gemini-2.5-flash-image-preview"]
-    
-    for model_name in models_to_try:
-        for attempt in range(max_retries):
+    try:
+        # Build prompt
+        prompt = build_freemark_generation_prompt(coordinates_data, timeframe, hair_density, hair_type, hair_color, request_id)
+        
+        # FIXED: Simplified content structure
+        import base64
+        image_b64 = base64.b64encode(input_image_data).decode('utf-8')
+        
+        # Try different content structures
+        content_variations = [
+            # Variation 1: Standard format
+            [
+                {
+                    "inline_data": {
+                        "mime_type": input_mime_type,
+                        "data": image_b64
+                    }
+                },
+                prompt
+            ],
+            # Variation 2: Alternative format
+            [
+                {
+                    "parts": [
+                        {
+                            "inline_data": {
+                                "mime_type": input_mime_type,
+                                "data": image_b64
+                            }
+                        },
+                        {"text": prompt}
+                    ]
+                }
+            ]
+        ]
+        
+        # Try multiple models
+        models_to_try = [
+            "gemini-1.5-pro",  # More reliable model
+            "gemini-1.5-flash", 
+            "gemini-2.0-flash-exp"  # If available
+        ]
+        
+        for model_name in models_to_try:
+            logger.info(f"GEN-{request_id}: Trying model: {model_name}")
+            
             try:
-                logger.info(f"GEN-{request_id}: Attempt {attempt + 1}/{max_retries} - Sending to {model_name}...")
-                
                 model = genai.GenerativeModel(model_name)
                 
-                # FIXED: Use the correct API call method
-                response = await asyncio.to_thread(model.generate_content, content)
-                
-                logger.info(f"GEN-{request_id}: Response type: {type(response).__name__}")
-                
-                # FIXED: Proper response parsing for image generation
-                if hasattr(response, 'parts') and response.parts:
-                    logger.info(f"GEN-{request_id}: Parts count: {len(response.parts)}")
-                    
-                    for i, part in enumerate(response.parts):
-                        logger.info(f"GEN-{request_id}: Part {i}: {type(part).__name__}")
+                for i, content in enumerate(content_variations):
+                    try:
+                        logger.info(f"GEN-{request_id}: Trying content variation {i+1}")
                         
-                        # FIXED: Check for inline_data properly
-                        if hasattr(part, 'inline_data') and part.inline_data:
-                            inline_data = part.inline_data
-                            logger.info(f"GEN-{request_id}: Found inline_data: {type(inline_data).__name__}")
+                        response = await asyncio.to_thread(model.generate_content, content)
+                        
+                        # SIMPLIFIED: Extract image data
+                        image_data = extract_image_from_response_simplified(response, request_id)
+                        
+                        if image_data:
+                            logger.info(f"GEN-{request_id}: ✓ SUCCESS with {model_name}, variation {i+1}")
+                            return image_data
                             
-                            # FIXED: Handle different data formats
-                            if hasattr(inline_data, 'data') and inline_data.data:
-                                image_data = inline_data.data
-                                logger.info(f"GEN-{request_id}: Found image data: {type(image_data).__name__}, length: {len(str(image_data))}")
-                                
-                                # FIXED: Handle base64 string vs bytes
-                                if isinstance(image_data, str):
-                                    # Data is base64 encoded string, decode it
-                                    try:
-                                        decoded_data = base64.b64decode(image_data)
-                                        logger.info(f"GEN-{request_id}: ✓ Generated {len(decoded_data)/1024:.1f}KB image on attempt {attempt + 1}")
-                                        return decoded_data
-                                    except Exception as decode_error:
-                                        logger.error(f"GEN-{request_id}: Base64 decode error: {decode_error}")
-                                        continue
-                                elif isinstance(image_data, bytes):
-                                    # Data is already bytes
-                                    logger.info(f"GEN-{request_id}: ✓ Generated {len(image_data)/1024:.1f}KB image on attempt {attempt + 1}")
-                                    return image_data
-                                else:
-                                    logger.warning(f"GEN-{request_id}: Unexpected data type: {type(image_data)}")
+                    except Exception as content_error:
+                        logger.warning(f"GEN-{request_id}: Content variation {i+1} failed: {str(content_error)}")
+                        continue
                         
-                        # FIXED: Alternative check for direct data attribute
-                        elif hasattr(part, 'data') and part.data:
-                            image_data = part.data
-                            if isinstance(image_data, bytes):
-                                logger.info(f"GEN-{request_id}: ✓ Generated {len(image_data)/1024:.1f}KB image on attempt {attempt + 1}")
-                                return image_data
-                            elif isinstance(image_data, str):
-                                try:
-                                    decoded_data = base64.b64decode(image_data)
-                                    logger.info(f"GEN-{request_id}: ✓ Generated {len(decoded_data)/1024:.1f}KB image on attempt {attempt + 1}")
-                                    return decoded_data
-                                except Exception as decode_error:
-                                    logger.error(f"GEN-{request_id}: Base64 decode error: {decode_error}")
-                                    continue
-                    
-                    logger.warning(f"GEN-{request_id}: No valid image data found in response parts on attempt {attempt + 1}")
-                
-                # FIXED: Check if response has candidates (alternative structure)
-                elif hasattr(response, 'candidates') and response.candidates:
-                    logger.info(f"GEN-{request_id}: Found candidates: {len(response.candidates)}")
-                    
-                    for candidate in response.candidates:
-                        if hasattr(candidate, 'content') and candidate.content:
-                            if hasattr(candidate.content, 'parts') and candidate.content.parts:
-                                for part in candidate.content.parts:
-                                    if hasattr(part, 'inline_data') and part.inline_data:
-                                        if hasattr(part.inline_data, 'data') and part.inline_data.data:
-                                            image_data = part.inline_data.data
-                                            if isinstance(image_data, str):
-                                                try:
-                                                    decoded_data = base64.b64decode(image_data)
-                                                    logger.info(f"GEN-{request_id}: ✓ Generated {len(decoded_data)/1024:.1f}KB image from candidates")
-                                                    return decoded_data
-                                                except Exception as decode_error:
-                                                    logger.error(f"GEN-{request_id}: Candidates decode error: {decode_error}")
-                                                    continue
-                                            elif isinstance(image_data, bytes):
-                                                logger.info(f"GEN-{request_id}: ✓ Generated {len(image_data)/1024:.1f}KB image from candidates")
-                                                return image_data
-                
-                # FIXED: Log the actual response structure for debugging
-                logger.warning(f"GEN-{request_id}: Could not extract image from response structure")
-                logger.warning(f"Response attributes: {[attr for attr in dir(response) if not attr.startswith('_')]}")
-                if hasattr(response, 'parts') and response.parts:
-                    for i, part in enumerate(response.parts):
-                        logger.warning(f"Part {i} attributes: {[attr for attr in dir(part) if not attr.startswith('_')]}")
-                        
-            except Exception as e:
-                logger.error(f"GEN-{request_id}: Attempt {attempt + 1} failed with {model_name}: {str(e)}")
-                logger.error(f"GEN-{request_id}: Exception type: {type(e).__name__}")
-                if "Could not convert" in str(e):
-                    logger.error(f"GEN-{request_id}: This appears to be a successful generation but with extraction issues")
-                if attempt == max_retries - 1:
-                    logger.error(f"GEN-{request_id}: All attempts failed with {model_name}")
-                else:
-                    await asyncio.sleep(1)  # Brief delay before retry
+            except Exception as model_error:
+                logger.warning(f"GEN-{request_id}: Model {model_name} failed: {str(model_error)}")
+                continue
+        
+        logger.error(f"GEN-{request_id}: All generation attempts failed")
+        return None
+        
+    except Exception as e:
+        logger.error(f"GEN-{request_id}: Critical error in fixed generation: {str(e)}")
+        return None
     
-    logger.error(f"GEN-{request_id}: All models and attempts failed")
-    return None
-
 def build_mask_based_hairline_prompt(timeframe: str, hair_density: float, hair_type: str, 
                                    hair_color: str, pattern_type: str, request_id: str = "",
                                    input_image_size: int = 0, mask_image_size: int = 0, 
                                    white_pixel_count: int = 0, total_pixels: int = 0) -> str:
-    """ENHANCED: Build mask-based hairline prompt with detailed logging and pattern support"""
-    logger.info(f"HAIRLINE-PROMPT-{request_id}: Building mask-based hairline prompt")
-    logger.info(f"HAIRLINE-PROMPT-{request_id}: Settings - Timeframe: {timeframe}, Density: {hair_density:.2f}, Type: {hair_type}, Color: {hair_color}, Pattern: {pattern_type}")
+    """ENHANCED: Fixed mask-based prompt with proper 8-month enhancement"""
+    logger.info(f"MASK-PROMPT-{request_id}: Building FIXED mask-based prompt for {timeframe}")
     
     try:
-        # Get hairline mask prompt from prompts.json
-        hairline_config = PROMPTS_CONFIG["generation_prompts"]["standard_generation"]["region_focus"]["Hairline"]
-        enhancement_multiplier = hairline_config["enhancement_multiplier"]
-        
-        # Get timeframe-specific configuration
-        timeframe_config = PROMPTS_CONFIG["generation_prompts"]["standard_generation"]["timeframe_specs"][timeframe]
-        timeframe_multiplier = timeframe_config["enhancement_multiplier"]
-        
-        # Calculate final enhancement multiplier
-        final_multiplier = enhancement_multiplier * timeframe_multiplier
-        
-        # Add color-specific instructions
-        color_instructions = PROMPTS_CONFIG["generation_prompts"]["freemark_generation"]["color_instructions"]
-        color_instruction = color_instructions.get(hair_color, f"Natural {hair_color} hair color with enhanced visibility and optimal contrast")
-        
-        # Get specific hair characteristics based on type
-        hair_texture_desc = {
-            "Straight Hair": "straight, smooth strands that lie flat against the scalp",
-            "Wavy Hair": "gentle waves with natural S-curve patterns and medium volume",
-            "Curly Hair": "defined curls with spiral patterns and natural volume",
-            "Coarse Hair": "thick, strong strands with robust texture",
-            "Fine Hair": "delicate, thin strands with subtle texture"
-        }.get(hair_type, "natural hair strands")
-        
-        # Get color-specific instructions
-        color_desc = {
-            "#000000": "deep black hair with natural shine and highlights",
-            "#654321": "rich dark brown with warm undertones", 
-            "#964B00": "medium brown with natural variation",
-            "#808080": "silver-gray with natural dimension",
-            "#6F4E37": "coffee brown with depth and warmth",
-            "#F0E2B6": "light golden blonde with natural highlights"
-        }.get(hair_color, f"natural {hair_color} colored hair")
-        
-        # Build enhanced hairline-specific prompt
-        complete_prompt = f"""PROFESSIONAL HAIR RESTORATION - MASK-GUIDED HAIR GROWTH
+        # FIXED: Clear differentiation between 3-month and 8-month
+        if timeframe == "8months":
+            enhancement_multiplier = 2.4  # MUCH HIGHER for 8-month
+            density_multiplier = 1.5      # Additional density boost
+            maturity_desc = "MAXIMUM MATURE RESTORATION"
+            coverage_desc = "COMPLETE FULL COVERAGE"
+            result_desc = "DRAMATIC TRANSFORMATION with THICK, ESTABLISHED hair"
+            generation_mode = "MAXIMUM ENHANCEMENT"
+        else:
+            enhancement_multiplier = 1.4  # Moderate for 3-month
+            density_multiplier = 1.1      # Light density boost
+            maturity_desc = "MODERATE EARLY GROWTH"
+            coverage_desc = "DEVELOPING COVERAGE" 
+            result_desc = "VISIBLE IMPROVEMENT with emerging hair growth"
+            generation_mode = "MODERATE ENHANCEMENT"
 
-TASK: Generate realistic hair growth in specific regions using mask guidance.
+        # Get color and hair type descriptions
+        color_desc = f"enhanced {hair_color} with optimal contrast and visibility"
+        hair_texture_desc = f"enhanced {hair_type.lower()} texture with natural characteristics"
+
+        # FIXED: Build dramatically different prompts for each timeframe
+        if timeframe == "8months":
+            complete_prompt = f"""PROFESSIONAL HAIR RESTORATION - ADVANCED 8-MONTH MATURE RESULTS
+
+🎯 CRITICAL MISSION: Generate MAXIMUM MATURE hair restoration showing COMPLETE transformation
 
 INPUT ANALYSIS:
-- Image 1: Original photo showing person with hair loss/balding areas
-  → Source: User uploaded image ({input_image_size} bytes)
-  → Purpose: Base image for hair restoration
-- Image 2: MASK IMAGE with WHITE regions indicating hair growth areas  
-  → Source: Generated/Enhanced mask ({mask_image_size} bytes)
-  → White pixels: {white_pixel_count} / {total_pixels} total ({white_pixel_count/total_pixels*100:.1f}% coverage)
-  → Purpose: Strict boundary template for hair generation
-- Pattern Type: {pattern_type} hairline restoration pattern
-- Request ID: {request_id}
+- Image 1: Original photo with hair loss areas
+- Image 2: WHITE mask regions = MAXIMUM HAIR GROWTH ZONES
+- Pattern: {pattern_type} restoration pattern
+- Enhancement Mode: {generation_mode}
+- Target: {maturity_desc}
 
-MASK INTERPRETATION (CRITICAL - MAXIMUM CONTRAST):
-🎯 WHITE AREAS in mask = MAXIMUM HAIR GROWTH ZONES (generate DENSE, THICK hair here)
-   → 100% AGGRESSIVE hair generation in white pixels
-   → MAXIMUM density and thickness in white regions
-   → DRAMATIC hair growth - make it VERY VISIBLE
-   → WHITE = FULL HAIR RESTORATION TARGET AREAS
+🔥 ADVANCED 8-MONTH MASK INTERPRETATION:
+• WHITE AREAS = COMPLETE MATURE HAIR COVERAGE (100% density)
+  → Generate EXTREMELY THICK, MATURE hair in white regions
+  → Show FULL, ESTABLISHED hair growth
+  → NO visible scalp in white mask areas
+  → MAXIMUM thickness and density
 
-🎯 BLACK AREAS in mask = ZERO GROWTH ZONES (absolutely NO hair generation)
-   → 0% hair generation in black pixels
-   → COMPLETELY preserve original appearance
-   → NO modifications, NO new hair, NO changes whatsoever
-   → BLACK = STRICT NO-TOUCH ZONES
+• BLACK AREAS = MODERATE SUPPORTING GROWTH (40% density)  
+  → Generate supporting hair in black regions
+  → Lighter but visible hair growth
+  → Natural transition areas
 
-🎯 EXTREME CONTRAST RULE: Create MAXIMUM difference between white and black areas
-🎯 WHITE areas should have DRAMATICALLY MORE hair than black areas
-🎯 The mask is a STRICT BOUNDARY - respect it with 100% precision
-🎯 NEVER blend or fade between white and black - maintain SHARP contrast
+• CRITICAL: WHITE areas must show DRAMATICALLY MORE hair than black areas
 
-HAIR SPECIFICATIONS FOR GENERATION:
-🎯 Hair Type: {hair_type}
-   → Generate {hair_texture_desc}
-   → Natural flow direction following scalp curvature
-   → Appropriate thickness for {hair_type.lower()} characteristics
+🚀 ADVANCED 8-MONTH SPECIFICATIONS:
+• Hair Type: {hair_texture_desc} with MAXIMUM mature thickness
+• Hair Color: {color_desc} with rich, deep coloration
+• Density: {hair_density * 100:.1f}% + {enhancement_multiplier}x + {density_multiplier}x = {hair_density * enhancement_multiplier * density_multiplier * 100:.0f}% effective
+• Pattern: {pattern_type} with COMPLETE mature coverage
+• Result: {result_desc}
 
-🎯 Hair Color: {hair_color}
-   → Create {color_desc}
-   → Match existing hair color if visible in original image
-   → Natural color variation and depth
+⚡ CRITICAL 8-MONTH SUCCESS FACTORS:
+1. Show DRAMATICALLY MORE hair than any 3-month result would
+2. Generate THICK, ESTABLISHED, mature hair strands
+3. Create COMPLETE coverage in WHITE mask areas - NO gaps
+4. Show natural mature hair flow and movement  
+5. Apply MAXIMUM enhancement for realistic 8-month advancement
+6. This is ADVANCED STAGE - show FULL restoration results
+7. WHITE regions should be OBVIOUSLY denser than black regions
+8. Create clear TRANSFORMATION - dramatic before/after difference
 
-🎯 Hair Density: {hair_density * 100:.1f}% coverage
-   → {timeframe_config['maturity']} appropriate for {timeframe} growth
-   → {final_multiplier:.1f}x enhancement multiplier for visible results
-   → {"AGGRESSIVE DENSITY for dramatic early results" if timeframe == "3months" else "MATURE DENSITY for full restoration results" if timeframe == "8months" else "Gradual density variation for natural appearance"}
+EXECUTION: Generate ADVANCED 8-MONTH mature hair restoration with MAXIMUM density and COMPLETE coverage."""
 
-🎯 Pattern Integration: {pattern_type}
-   → Follow natural hairline patterns
-   → Respect facial proportions and symmetry
-   → Create age-appropriate hairline shape
+        else:
+            complete_prompt = f"""PROFESSIONAL HAIR RESTORATION - EARLY 3-MONTH DEVELOPING RESULTS
 
-PRECISE GENERATION INSTRUCTIONS:
-1. EXAMINE Image 2 (the mask) - identify ALL WHITE REGIONS
-2. GENERATE thick, dense {hair_type.lower()} ONLY in WHITE masked regions
-3. CREATE {color_desc} with natural shine and depth
-4. ENSURE {hair_density * 100:.1f}% density coverage within WHITE regions
-5. BLEND seamlessly with existing hair at WHITE/BLACK boundaries
-6. MAINTAIN natural hair growth direction and flow patterns
-7. PRESERVE all BLACK masked areas completely unchanged
-8. DO NOT generate hair outside WHITE regions
-9. CRITICAL: Use Image 2 as a STRICT TEMPLATE - white = hair, black = no hair
+📈 MISSION: Generate MODERATE early hair regrowth showing visible progress
 
-{"ENHANCED 3-MONTH GENERATION REQUIREMENTS:" if timeframe == "3months" else "ENHANCED 8-MONTH GENERATION REQUIREMENTS:" if timeframe == "8months" else "STANDARD GENERATION REQUIREMENTS:"}
-{"✅ Generate MAXIMUM VISIBLE hair growth - this is early stage restoration" if timeframe == "3months" else "✅ Generate FULL, MATURE hair restoration - this is advanced stage" if timeframe == "8months" else "✅ Generate natural progressive hair growth"}
-{"✅ Create THICK, PROMINENT hair strands for dramatic early results" if timeframe == "3months" else "✅ Create DENSE, FULL-BODIED hair with mature thickness and volume" if timeframe == "8months" else "✅ Create natural hair thickness appropriate for timeframe"}
-{"✅ Use ENHANCED density multiplier for clearly visible improvement" if timeframe == "3months" else "✅ Use MAXIMUM density multiplier for complete restoration appearance" if timeframe == "8months" else "✅ Use appropriate density for natural progression"}
-{"✅ Focus on DRAMATIC VISIBILITY - patient needs to see clear progress" if timeframe == "3months" else "✅ Focus on COMPLETE RESTORATION - show full hair recovery results" if timeframe == "8months" else "✅ Focus on natural, mature hair growth"}
-{"✅ Generate hair that is CLEARLY DISTINGUISHABLE from balding areas" if timeframe == "3months" else "✅ Generate hair that COMPLETELY COVERS and TRANSFORMS balding areas" if timeframe == "8months" else "✅ Generate natural hair progression"}
+INPUT ANALYSIS:
+- Image 1: Original photo with hair loss areas  
+- Image 2: WHITE mask regions = PRIMARY GROWTH ZONES
+- Pattern: {pattern_type} restoration pattern
+- Enhancement Mode: {generation_mode}
+- Target: {maturity_desc}
 
-CRITICAL SUCCESS FACTORS:
-✅ Generate VISIBLE, THICK hair growth in ALL WHITE masked areas
-✅ Natural {hair_type.lower()} texture and realistic appearance
-✅ Consistent {hair_color} coloring throughout new hair
-✅ Realistic density matching {hair_density * 100:.1f}% specification
-✅ Seamless integration at WHITE/BLACK mask boundaries
-✅ Professional hair restoration quality
-✅ NO modifications to BLACK masked areas
+🌱 EARLY 3-MONTH MASK INTERPRETATION:
+• WHITE AREAS = DEVELOPING HAIR COVERAGE (70% density)
+  → Generate visible but developing hair in white regions
+  → Show emerging hair growth patterns
+  → Some scalp visibility normal for early stage
+  → Moderate thickness appropriate for 3-month growth
 
-RESULT: {"Generate a realistic photo showing DRAMATIC 3-month hair restoration progress with CLEARLY VISIBLE new hair growth in " + pattern_type + " pattern. Show THICK, PROMINENT " + hair_type.lower() + " in " + hair_color + " color at " + str(hair_density * 100) + "% density in WHITE masked regions. The result must show OBVIOUS improvement from balding areas." if timeframe == "3months" else "Generate a realistic photo showing COMPLETE 8-month hair restoration with FULL, MATURE hair coverage in " + pattern_type + " pattern. Show DENSE, FULL-BODIED " + hair_type.lower() + " in " + hair_color + " color at " + str(hair_density * 100) + "% density in WHITE masked regions. The result must show COMPLETE TRANSFORMATION from balding to full hair coverage." if timeframe == "8months" else "Generate a realistic photo showing successful " + pattern_type + " hair restoration with " + hair_type.lower() + " in " + hair_color + " color at " + str(hair_density * 100) + "% density in WHITE masked regions only."}
+• BLACK AREAS = LIGHT SUPPORTING GROWTH (30% density)
+  → Generate light hair in black regions  
+  → Subtle supporting growth
+  → Natural background coverage
 
-Execute {"AGGRESSIVE 3-month" if timeframe == "3months" else "COMPLETE 8-month" if timeframe == "8months" else "standard"} hair restoration generation now."""
+• WHITE areas should have MORE hair than black areas but not complete coverage
 
-        logger.info(f"HAIRLINE-PROMPT-{request_id}: Final prompt built ({len(complete_prompt)} chars)")
-        logger.info(f"HAIRLINE-PROMPT-{request_id}: Enhancement multiplier: {final_multiplier:.1f}x")
-        logger.info(f"HAIRLINE-PROMPT-{request_id}: PROMPT CONTENT:")
-        logger.info(f"HAIRLINE-PROMPT-{request_id}: {complete_prompt}")
+📊 EARLY 3-MONTH SPECIFICATIONS:
+• Hair Type: {hair_texture_desc} with moderate developing thickness
+• Hair Color: {color_desc} with natural color development
+• Density: {hair_density * 100:.1f}% + {enhancement_multiplier}x + {density_multiplier}x = {hair_density * enhancement_multiplier * density_multiplier * 100:.0f}% effective
+• Pattern: {pattern_type} with developing coverage
+• Result: {result_desc}
+
+✅ CRITICAL 3-MONTH SUCCESS FACTORS:
+1. Show CLEAR improvement but not final results
+2. Generate visible but DEVELOPING hair strands
+3. Create moderate coverage in WHITE mask areas - show progress
+4. Show natural early hair growth patterns
+5. Apply moderate enhancement for realistic 3-month progression  
+6. This is EARLY STAGE - show promise, not completion
+7. WHITE regions should be clearly denser than black regions
+8. Create VISIBLE progress - clear improvement from baseline
+
+EXECUTION: Generate MODERATE 3-MONTH developing hair restoration with visible progress."""
+
+        logger.info(f"MASK-PROMPT-{request_id}: Generated FIXED {timeframe} prompt ({len(complete_prompt)} chars)")
+        logger.info(f"MASK-PROMPT-{request_id}: Enhancement: {enhancement_multiplier}x, Density: {density_multiplier}x")
         
         return complete_prompt
         
     except Exception as e:
-        logger.error(f"MASK-PROMPT-{request_id}: Error building prompt: {str(e)}")
-        # Fallback prompt
-        return f"Generate enhanced hairline restoration using the provided mask image as guidance. Apply {hair_density * 100:.1f}% density with {hair_type} characteristics and {hair_color} color for {timeframe} timeframe."
-
-def convert_to_freemark_style_mask(pattern_image_data: bytes, request_id: str = "", pattern_type: str = "M Pattern") -> bytes:
-    """Convert pattern image to FreeMark style mask based on pattern type"""
-    logger.info(f"FREEMARK-MASK-{request_id}: Converting {pattern_type} to FreeMark style mask")
+        logger.error(f"MASK-PROMPT-{request_id}: Error building FIXED prompt: {str(e)}")
+        return f"Generate enhanced hair restoration for {pattern_type} pattern at {timeframe} with {hair_density * 100:.1f}% density."
+    
+def convert_to_freemark_style_mask(pattern_image_data: bytes, pattern_type: str = "", request_id: str = "") -> bytes:
+    """Convert pattern image to FreeMark style mask with optimized processing"""
+    logger.info(f"FREEMARK-MASK-{request_id}: Converting to FreeMark style mask")
     
     try:
-        # Load pattern image
+        # Load pattern image and convert to grayscale for threshold detection
         pattern_image = Image.open(io.BytesIO(pattern_image_data))
         width, height = pattern_image.size
+        pattern_array = np.array(pattern_image.convert('L'))
         logger.info(f"FREEMARK-MASK-{request_id}: Original pattern size: {width}x{height}")
-        
-        # Convert to grayscale for processing
-        gray_pattern = pattern_image.convert('L')
-        pattern_array = np.array(gray_pattern)
-        
+
         # Create FreeMark style mask: black background, white areas
-        freemark_mask = np.zeros((height, width, 3), dtype=np.uint8)  # Start with black
+        freemark_mask = np.zeros((height, width, 3), dtype=np.uint8)
         
-        # Pattern-specific processing
-        if pattern_type.lower() in ['crown', 'full scalp', 'mid crown', 'full_scalp', 'mid_crown']:
-            logger.info(f"FREEMARK-MASK-{request_id}: Processing {pattern_type} as RADIUS-based pattern (INNER WHITE)")
-            
-            # For crown/scalp patterns: create clean white INNER radius areas
-            # Find the center of the pattern
-            pattern_pixels = pattern_array > 30
-            if np.any(pattern_pixels):
-                # Find bounding box of pattern
-                coords = np.where(pattern_pixels)
-                min_y, max_y = np.min(coords[0]), np.max(coords[0])
-                min_x, max_x = np.min(coords[1]), np.max(coords[1])
-                
-                center_y = (min_y + max_y) // 2
-                center_x = (min_x + max_x) // 2
-                
-                # Calculate radius based on pattern size - make it generous for good coverage
-                radius_y = (max_y - min_y) // 2 + 30  # More padding for better coverage
-                radius_x = (max_x - min_x) // 2 + 30  # More padding for better coverage
-                
-                # Ensure minimum radius for visibility
-                min_radius = min(width, height) // 8
-                radius_y = max(radius_y, min_radius)
-                radius_x = max(radius_x, min_radius)
-                
-                # Create elliptical/circular WHITE INNER area (hair growth region)
-                y_coords, x_coords = np.ogrid[:height, :width]
-                ellipse_mask = ((x_coords - center_x) / radius_x)**2 + ((y_coords - center_y) / radius_y)**2 <= 1
-                
-                freemark_mask[ellipse_mask] = [255, 255, 255]  # WHITE INNER area for hair growth
-                
-                logger.info(f"FREEMARK-MASK-{request_id}: Created WHITE INNER circle at ({center_x}, {center_y}) with radius ({radius_x}, {radius_y})")
-            else:
-                # Fallback: center circular WHITE INNER area
-                center_x, center_y = width // 2, height // 2
-                radius = min(width, height) // 3  # Larger radius for better coverage
-                y_coords, x_coords = np.ogrid[:height, :width]
-                circle_mask = (x_coords - center_x)**2 + (y_coords - center_y)**2 <= radius**2
-                freemark_mask[circle_mask] = [255, 255, 255]  # WHITE INNER circle
-                logger.info(f"FREEMARK-MASK-{request_id}: Created fallback WHITE INNER circle with radius {radius}")
-                
-        else:
-            logger.info(f"FREEMARK-MASK-{request_id}: Processing {pattern_type} as SHAPE-based pattern (M/Z/Curve)")
-            
-            # For M/Z/Curve patterns: convert shape to solid white regions
-            # Find pattern areas (non-black pixels)
-            threshold = 30
-            pattern_pixels = pattern_array > threshold
-            
-            # Remove small noise/points by applying morphological operations
+        # Detect pattern regions using green color and intensity thresholds
+        rgb_pattern = pattern_image.convert('RGB')
+        rgb_array = np.array(rgb_pattern)
+        green_mask = (rgb_array[:,:,1] > 200) & (rgb_array[:,:,0] < 100) & (rgb_array[:,:,2] < 100)
+        gray_mask = pattern_array > 30
+        pattern_pixels = green_mask | gray_mask
+        
+        if np.sum(pattern_pixels) > 0:
+            # Clean up pattern using morphological operations
             from scipy import ndimage
-            
-            # Clean up small points and noise
-            cleaned_pattern = ndimage.binary_opening(pattern_pixels, iterations=2)
-            
-            # Dilate to create solid regions (remove gaps between points)
-            solid_pattern = ndimage.binary_dilation(cleaned_pattern, iterations=8)
-            
-            # Fill holes to create solid white regions
+            cleaned_pattern = ndimage.binary_opening(pattern_pixels, iterations=1)
+            solid_pattern = ndimage.binary_dilation(cleaned_pattern, iterations=4)
             filled_pattern = ndimage.binary_fill_holes(solid_pattern)
+            final_pattern = ndimage.binary_closing(filled_pattern, iterations=2)
             
-            # Apply final smoothing
-            final_pattern = ndimage.binary_closing(filled_pattern, iterations=3)
+            # Set detected regions to white
+            freemark_mask[final_pattern] = [255, 255, 255]
             
-            # Make pattern areas white
-            freemark_mask[final_pattern] = [255, 255, 255]  # White pattern areas
-            
-            logger.info(f"FREEMARK-MASK-{request_id}: Created solid shape regions (removed points)")
+            logger.info(f"FREEMARK-MASK-{request_id}: Created mask with {np.sum(final_pattern)} white pixels")
+        else:
+            # Only use fallback for hairline patterns
+            if 'hairline' in pattern_type.lower():
+                h_center, w_center = height // 2, width // 2
+                h_size, w_size = height // 6, width // 3
+                freemark_mask[h_center-h_size:h_center+h_size, w_center-w_size:w_center+w_size] = [255, 255, 255]
+                logger.info(f"FREEMARK-MASK-{request_id}: Used rectangular fallback for hairline pattern")
+            else:
+                logger.warning(f"FREEMARK-MASK-{request_id}: No pattern detected and no fallback for {pattern_type}")
+                return pattern_image_data  # Return original pattern for non-hairline patterns
         
-        # Convert to PIL Image
+        # Convert to image and save
         final_mask = Image.fromarray(freemark_mask)
-        
-        # Save to bytes
         mask_bytes = io.BytesIO()
         final_mask.save(mask_bytes, format='PNG')
         result_data = mask_bytes.getvalue()
         
-        # Calculate statistics
+        # Log mask statistics
         white_pixels = np.sum(freemark_mask[:,:,0] == 255)
         total_pixels = width * height
         white_percentage = (white_pixels / total_pixels) * 100
-        
-        logger.info(f"FREEMARK-MASK-{request_id}: Created {pattern_type} FreeMark mask ({len(result_data)} bytes)")
-        logger.info(f"FREEMARK-MASK-{request_id}: White areas: {white_pixels} / {total_pixels} pixels ({white_percentage:.1f}%)")
+        logger.info(f"FREEMARK-MASK-{request_id}: Created mask ({len(result_data)} bytes)")
+        logger.info(f"FREEMARK-MASK-{request_id}: White areas: {white_pixels} pixels ({white_percentage:.1f}%)")
         logger.info(f"FREEMARK-MASK-{request_id}: Black areas: {total_pixels - white_pixels} pixels ({100-white_percentage:.1f}%)")
         
         return result_data
         
     except Exception as e:
-        logger.error(f"FREEMARK-MASK-{request_id}: Error converting {pattern_type}: {str(e)}")
-        # Fallback based on pattern type
+        logger.error(f"FREEMARK-MASK-{request_id}: Error converting pattern: {str(e)}")
         try:
             pattern_image = Image.open(io.BytesIO(pattern_image_data))
             width, height = pattern_image.size
             
+            # Create fallback mask based on pattern type
             fallback_mask = np.zeros((height, width, 3), dtype=np.uint8)
             center_x, center_y = width // 2, height // 2
             
@@ -880,22 +849,22 @@ def convert_to_freemark_style_mask(pattern_image_data: bytes, request_id: str = 
                 logger.info(f"FREEMARK-MASK-{request_id}: Used circular fallback for {pattern_type}")
             else:
                 # Rectangular fallback for hairline patterns
-                rect_width = width // 3
                 rect_height = height // 6
+                rect_width = width // 3
                 y1, y2 = center_y - rect_height, center_y + rect_height
                 x1, x2 = center_x - rect_width, center_x + rect_width
                 fallback_mask[y1:y2, x1:x2] = [255, 255, 255]
                 logger.info(f"FREEMARK-MASK-{request_id}: Used rectangular fallback for {pattern_type}")
             
+            # Save fallback mask
             final_mask = Image.fromarray(fallback_mask)
             mask_bytes = io.BytesIO()
             final_mask.save(mask_bytes, format='PNG')
-            
             return mask_bytes.getvalue()
             
         except Exception as fallback_error:
             logger.error(f"FREEMARK-MASK-{request_id}: Fallback also failed: {str(fallback_error)}")
-            return pattern_image_data
+            return pattern_image_data  # Return original pattern if all conversions fail
 
 def convert_pattern_to_white_mask(pattern_image_data: bytes, request_id: str = "") -> bytes:
     """Convert pattern image to white mask for better generation (used during generation)"""
@@ -1256,10 +1225,10 @@ def detect_face_with_mediapipe(image_data: bytes, request_id: str = "") -> dict:
             "landmarks": None,
             "face_bounds": None
         }
-
+ 
 def generate_hairlines_and_scalp_regions(image_data: bytes, face_bounds: dict, request_id: str = "") -> dict:
-    """Generate different hairline patterns and scalp regions based on detected face"""
-    logger.info(f"HAIRLINE-GEN-{request_id}: Generating hairline patterns...")
+    """FIXED: Generate different hairline patterns with FILLED GREEN REGIONS for better detection"""
+    logger.info(f"HAIRLINE-GEN-{request_id}: Generating hairline patterns with FILLED regions...")
     
     try:
         nparr = np.frombuffer(image_data, np.uint8)
@@ -1282,7 +1251,7 @@ def generate_hairlines_and_scalp_regions(image_data: bytes, face_bounds: dict, r
         generated_patterns = {}
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         
-        # Hairline M Pattern
+        # Hairline M Pattern (keep existing - works fine)
         img_m = image.copy()
         m_points = [
             (int(face_left + face_width * 0.1), int(face_top - 20)),
@@ -1297,79 +1266,73 @@ def generate_hairlines_and_scalp_regions(image_data: bytes, face_bounds: dict, r
         cv2.imwrite(m_path, img_m)
         generated_patterns["hairline_m"] = m_path
 
-        # Crown - FILLED GREEN CIRCLE (like M pattern)
+        # FIXED Crown - SOLID FILLED GREEN ELLIPSE for better detection
         img_crown = image.copy()
         crown_y = int(face_top - (face_width * 0.5))
         crown_center = (center_x, crown_y)
-        axes_crown = (int(face_width * 0.4), int(face_width * 0.25))
+        axes_crown = (int(face_width * 0.35), int(face_width * 0.2))  # Slightly smaller for better targeting
         
-        # Fill the entire ellipse area with GREEN color (like M pattern solid coverage)
-        cv2.ellipse(img_crown, crown_center, axes_crown, 0, 0, 360, (0, 255, 0), -1)  # FILLED GREEN ellipse
+        # FIXED: Fill the entire ellipse area with SOLID GREEN color
+        cv2.ellipse(img_crown, crown_center, axes_crown, 0, 0, 360, (0, 255, 0), -1)  # -1 = FILLED
         
-        # Add slight transparency by blending with original
-        overlay = img_crown.copy()
-        cv2.ellipse(overlay, crown_center, axes_crown, 0, 0, 360, (0, 255, 0), -1)
-        cv2.addWeighted(overlay, 0.3, img_crown, 0.7, 0, img_crown)  # 30% green, 70% original
+        # NO transparency blending - keep it solid green for better detection
+        # Draw GREEN ellipse outline for extra definition
+        cv2.ellipse(img_crown, crown_center, axes_crown, 0, 0, 360, (0, 255, 0), 4)  # Thicker outline
         
-        # Draw GREEN ellipse outline for definition
-        cv2.ellipse(img_crown, crown_center, axes_crown, 0, 0, 360, (0, 255, 0), 3)  # GREEN outline
         crown_filename = f"{timestamp}_{request_id}_crown.jpg"
         crown_path = os.path.join("detections", crown_filename)
         cv2.imwrite(crown_path, img_crown)
         generated_patterns["crown"] = crown_path
+        logger.info(f"  - Crown pattern: SOLID GREEN ellipse at {crown_center} with axes {axes_crown}")
 
-        # Full Scalp - FILLED GREEN CIRCLE (like M pattern)
+        # FIXED Full Scalp - SOLID FILLED GREEN ELLIPSE 
         img_scalp = image.copy()
         scalp_center = (center_x, int(face_top - face_height * 0.6))
-        axes_scalp = (int(face_width * 0.6), int(face_height * 0.9))
+        axes_scalp = (int(face_width * 0.5), int(face_height * 0.7))  # Larger for full scalp
         
-        # Fill the entire ellipse area with GREEN color (like M pattern solid coverage)
-        cv2.ellipse(img_scalp, scalp_center, axes_scalp, 0, 0, 360, (0, 255, 0), -1)  # FILLED GREEN ellipse
+        # FIXED: Fill the entire ellipse area with SOLID GREEN color
+        cv2.ellipse(img_scalp, scalp_center, axes_scalp, 0, 0, 360, (0, 255, 0), -1)  # -1 = FILLED
         
-        # Add slight transparency by blending with original
-        overlay = img_scalp.copy()
-        cv2.ellipse(overlay, scalp_center, axes_scalp, 0, 0, 360, (0, 255, 0), -1)
-        cv2.addWeighted(overlay, 0.3, img_scalp, 0.7, 0, img_scalp)  # 30% green, 70% original
+        # NO transparency blending - keep it solid green for better detection
+        # Draw GREEN ellipse outline for extra definition  
+        cv2.ellipse(img_scalp, scalp_center, axes_scalp, 0, 0, 360, (0, 255, 0), 4)  # Thicker outline
         
-        # Draw GREEN ellipse outline for definition
-        cv2.ellipse(img_scalp, scalp_center, axes_scalp, 0, 0, 360, (0, 255, 0), 3)  # GREEN outline
         scalp_filename = f"{timestamp}_{request_id}_scalp.jpg"
         scalp_path = os.path.join("detections", scalp_filename)
         cv2.imwrite(scalp_path, img_scalp)
         generated_patterns["full_scalp"] = scalp_path
+        logger.info(f"  - Full scalp pattern: SOLID GREEN ellipse at {scalp_center} with axes {axes_scalp}")
 
-        # Mid-Crown - FILLED GREEN CIRCLE (like M pattern)
+        # FIXED Mid-Crown - SOLID FILLED GREEN ELLIPSE
         img_mid_crown = image.copy()
-        mid_crown_center = (center_x, int(scalp_center[1] - axes_scalp[1] * 0.5))
-        axes_mid = (int(face_width * 0.3), int(face_width * 0.15))
+        mid_crown_center = (center_x, int(scalp_center[1] - axes_scalp[1] * 0.3))  # Position between crown and full scalp
+        axes_mid = (int(face_width * 0.25), int(face_width * 0.12))  # Medium size
         
-        # Fill the entire ellipse area with GREEN color (like M pattern solid coverage)
-        cv2.ellipse(img_mid_crown, mid_crown_center, axes_mid, 0, 0, 360, (0, 255, 0), -1)  # FILLED GREEN ellipse
+        # FIXED: Fill the entire ellipse area with SOLID GREEN color
+        cv2.ellipse(img_mid_crown, mid_crown_center, axes_mid, 0, 0, 360, (0, 255, 0), -1)  # -1 = FILLED
         
-        # Add slight transparency by blending with original
-        overlay = img_mid_crown.copy()
-        cv2.ellipse(overlay, mid_crown_center, axes_mid, 0, 0, 360, (0, 255, 0), -1)
-        cv2.addWeighted(overlay, 0.3, img_mid_crown, 0.7, 0, img_mid_crown)  # 30% green, 70% original
+        # NO transparency blending - keep it solid green for better detection
+        # Draw GREEN ellipse outline for extra definition
+        cv2.ellipse(img_mid_crown, mid_crown_center, axes_mid, 0, 0, 360, (0, 255, 0), 4)  # Thicker outline
         
-        # Draw GREEN ellipse outline for definition
-        cv2.ellipse(img_mid_crown, mid_crown_center, axes_mid, 0, 0, 360, (0, 255, 0), 3)  # GREEN outline
         mid_crown_filename = f"{timestamp}_{request_id}_mid_crown.jpg"
         mid_crown_path = os.path.join("detections", mid_crown_filename)
         cv2.imwrite(mid_crown_path, img_mid_crown)
         generated_patterns["mid_crown"] = mid_crown_path
+        logger.info(f"  - Mid-crown pattern: SOLID GREEN ellipse at {mid_crown_center} with axes {axes_mid}")
 
-        logger.info(f"HAIRLINE-GEN-{request_id}: Generated {len(generated_patterns)} hairline patterns")
+        logger.info(f"HAIRLINE-GEN-{request_id}: Generated {len(generated_patterns)} SOLID GREEN patterns for better mask detection")
 
         return {
             "success": True,
             "patterns": generated_patterns,
-            "pattern_count": len(generated_patterns)
+            "pattern_count": len(generated_patterns),
+            "generation_method": "solid_filled_ellipses"
         }
 
     except Exception as e:
         logger.error(f"HAIRLINE-GEN-{request_id}: Error generating patterns: {str(e)}")
         return {"error": f"Pattern generation error: {str(e)}"}
-
 # Face Detection Endpoint
 @app.post("/detect-face")
 async def detect_face_endpoint(image: UploadFile = File(...)):
@@ -1506,9 +1469,9 @@ async def save_settings(
     hairline_pattern: str = Form("M_pattern"),
     hairline_points: Optional[str] = Form(None)
 ):
-    """Save user settings and pattern/mask data for later generation"""
+    """Save user settings and pattern/mask data for later generation - NO GENERATION HERE"""
     request_id = generate_request_id()
-    logger.info(f"SAVE-SETTINGS-{request_id}: Saving user settings and pattern data")
+    logger.info(f"SAVE-SETTINGS-{request_id}: Saving user settings and pattern data (NO GENERATION)")
     
     # Log all received settings
     logger.info(f"SAVE-SETTINGS-{request_id}: Received settings from frontend:")
@@ -1580,7 +1543,7 @@ async def save_settings(
             except json.JSONDecodeError:
                 logger.warning(f"  - Invalid hairline points JSON, skipping")
         
-        # Save masks if provided
+        # Save masks if provided - NO GENERATION, ONLY SAVING
         mask_paths = {}
         
         # Save FreeMark masks
@@ -1626,7 +1589,7 @@ async def save_settings(
         with open(settings_path, "w") as f:
             json.dump(settings_data, f, indent=2)
         
-        logger.info(f"SAVE-SETTINGS-{request_id}: Settings saved successfully")
+        logger.info(f"SAVE-SETTINGS-{request_id}: Settings saved successfully (NO GENERATION PERFORMED)")
         logger.info(f"  - Original image: {original_path}")
         logger.info(f"  - Settings file: {settings_path}")
         logger.info(f"  - Masks saved: {len(mask_paths)}")
@@ -1634,7 +1597,7 @@ async def save_settings(
         return {
             "success": True,
             "request_id": request_id,
-            "message": "Settings and pattern data saved successfully",
+            "message": "Settings and pattern data saved successfully - use generate-with-saved-pattern to create hair images",
             "saved_files": {
                 "original_image": original_path,
                 "settings": settings_path,
