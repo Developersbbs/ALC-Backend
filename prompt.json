@@ -13,11 +13,11 @@
           "growth_characteristics": "clearly visible emerging hair strands with enhanced thickness and contrast"
         },
         "8months": {
-          "enhancement_multiplier": 1.6,
+          "enhancement_multiplier": 1.5,
           "maturity": "Mature established growth",
-          "prompt_addition": "ENHANCED 8-MONTH GENERATION: Show COMPLETE hair restoration - this is advanced stage with {hair_density:.1%} base density + 1.6x visibility multiplier. Create DENSE, FULL-BODIED hair with mature thickness and volume. Use MAXIMUM density multiplier for complete restoration appearance. Focus on COMPLETE RESTORATION - show full hair recovery results. Generate hair that COMPLETELY COVERS and TRANSFORMS balding areas.",
-          "visibility_requirement": "dramatic_transformation",
-          "growth_characteristics": "dramatically thick, full, established hair with maximum visual impact"
+          "prompt_addition": "ENHANCED 8-MONTH GENERATION: Show NATURAL hair restoration progress - this is advanced stage with {hair_density:.1%} base density + 1.5x visibility multiplier. Create NATURAL, FULLER hair with realistic thickness and volume. Use MODERATE density multiplier for believable restoration appearance. Focus on REALISTIC IMPROVEMENT - show natural hair recovery results. Generate hair that NATURALLY IMPROVES and ENHANCES balding areas.",
+          "visibility_requirement": "natural_improvement",
+          "growth_characteristics": "naturally fuller, mature hair with realistic visual improvement"
         }
       },
       "hair_types": {
@@ -79,18 +79,17 @@
       },
       "timeframe_specs": {
         "3months": {
-          "enhancement_multiplier": 1.4,
+          "enhancement_multiplier": 1.25,
           "maturity": "Early visible regrowth stage",
-          "description": "AGGRESSIVE DENSITY for dramatic early results",
-          "visibility_focus": "DRAMATIC VISIBILITY - patient needs to see clear progress",
-          "generation_text": "Generate MODERATE 3-month hair restoration progress with VISIBLE new hair growth"
+          "description": "SUBTLE DENSITY for realistic early results",
+          "visibility_focus": "NATURAL VISIBILITY - patient should see subtle but real progress",
+          "generation_text": "Generate SUBTLE 3-month hair restoration progress with NATURAL early growth"
         },
         "8months": {
-          "enhancement_multiplier": 1.8,
+          "enhancement_multiplier": 1.5,
           "maturity": "Mature established growth stage",
-          "description": "MAXIMUM DENSITY for full restoration results",
-          "visibility_focus": "COMPLETE RESTORATION - show full hair recovery results",
-          "generation_text": "Generate COMPLETE 8-month hair restoration with MAXIMUM FULL, MATURE hair coverage"
+"description": "SUBTLE DENSITY for realistic restoration results",          "visibility_focus": "REALISTIC IMPROVEMENT - show natural hair recovery results",
+          "generation_text": "Generate NATURAL 8-month hair restoration with REALISTIC, MATURE hair coverage"
         }
       },
       "mask_interpretation": {
@@ -105,32 +104,32 @@
           ]
         },
         "black_areas": {
-          "description": "MODERATE HAIR GROWTH ZONES (generate LIGHT hair here)",
-          "density_percentage": "30-40",
+          "description": "MINIMAL HAIR GROWTH ZONES (generate VERY LIGHT hair here)",
+          "density_percentage": "15-20",
           "characteristics": [
-            "30-40% MODERATE hair generation in black pixels",
-            "LIGHTER density and thickness in black regions",
-            "SUBTLE hair growth - less visible than white areas",
-            "SECONDARY HAIR RESTORATION AREAS"
+            "15-20% MINIMAL hair generation in black pixels",
+            "VERY LIGHT density and thickness in black regions",
+            "BARELY VISIBLE hair growth - extremely subtle",
+            "MINIMAL SUPPORTING HAIR RESTORATION AREAS"
           ]
         }
       },
       "generation_steps": [
         "EXAMINE Image 2 (the mask) - identify WHITE and BLACK regions for different hair densities",
         "GENERATE MAXIMUM thick, dense hair in WHITE masked regions (100% density)",
-        "GENERATE MODERATE lighter hair in BLACK masked regions (30-40% density)",
-        "CREATE natural color with shine - WHITE areas VERY VISIBLE, BLACK areas SUBTLE",
+        "GENERATE MINIMAL very light hair in BLACK masked regions (15-20% density)",
+        "CREATE natural color with shine - WHITE areas VERY VISIBLE, BLACK areas BARELY NOTICEABLE",
         "ENSURE full density coverage in WHITE regions - GO AGGRESSIVE",
-        "ENSURE 30-40% density coverage in BLACK regions - MODERATE growth",
+        "ENSURE 15-20% density coverage in BLACK regions - MINIMAL growth",
         "MAINTAIN natural hair growth direction in BOTH WHITE and BLACK areas",
         "CREATE CLEAR contrast - WHITE areas should have SIGNIFICANTLY more hair than BLACK"
       ],
       "success_factors": [
         "Generate EXTREMELY VISIBLE, THICK hair growth in ALL WHITE masked areas",
-        "Generate MODERATE, LIGHTER hair growth in ALL BLACK masked areas",
-        "Create STRONG difference between WHITE (maximum hair) and BLACK (moderate hair) regions",
+        "Generate MINIMAL, VERY LIGHT hair growth in ALL BLACK masked areas",
+        "Create STRONG difference between WHITE (maximum hair) and BLACK (minimal hair) regions",
         "WHITE areas must have MAXIMUM hair density - make it VERY obvious",
-        "BLACK areas must have MODERATE hair density (30-40%) - subtle but present",
+        "BLACK areas must have MINIMAL hair density (15-20%) - barely noticeable",
         "Natural hair texture and realistic appearance in BOTH areas",
         "Consistent hair coloring throughout new hair in BOTH regions",
         "Professional hair restoration quality with CLEAR density contrast"

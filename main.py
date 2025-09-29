@@ -165,16 +165,16 @@ def build_freemark_generation_prompt(coordinates_data: dict, timeframe: str,
     # FIXED: More aggressive parameters for 3-month generation
     if timeframe in ["3months", "3 months", "3 Months"]:
         timeframe_key = "3months"
-        base_multiplier = 2.5      # INCREASED from 2.0
-        density_boost = 1.6        # INCREASED from 1.3
-        timeframe_desc = f"ULTRA-AGGRESSIVE EARLY REGROWTH with {hair_density * 100:.1f}% base density + {base_multiplier}x DRAMATIC enhancement"
+        base_multiplier = 1.25     # Realistic 3-month growth (25%)
+        density_boost = 1.0        # No artificial boost for natural results
+        timeframe_desc = f"SUBTLE EARLY REGROWTH with {hair_density * 100:.1f}% base density achieving 25% subtle growth"
         growth_type = "THICK, CLEARLY VISIBLE emerging hair strands with MAXIMUM early-stage impact"
         visibility_req = "IMMEDIATE_VISIBLE_TRANSFORMATION"
         maturity_level = "ENHANCED EARLY STAGE WITH DRAMATIC VISIBILITY"
     else:
         timeframe_key = "8months"
-        base_multiplier = 2.8      # Slightly increased for 8 months
-        density_boost = 1.8        # Increased for maximum maturity
+        base_multiplier = 1.5      # Realistic 8-month growth (50% improvement)
+        density_boost = 1.0        # No artificial boost for natural results
         timeframe_desc = f"MAXIMUM MATURE GROWTH with {hair_density * 100:.1f}% base density + {base_multiplier}x COMPLETE transformation"
         growth_type = "EXTREMELY THICK, FULLY ESTABLISHED hair with TOTAL visual impact"
         visibility_req = "COMPLETE_TRANSFORMATION"
@@ -211,41 +211,45 @@ def build_freemark_generation_prompt(coordinates_data: dict, timeframe: str,
     effective_percentage = min(100, effective_density * 100)
     
     # FIXED: Enhanced prompt with stronger 3-month requirements
-    prompt = f"""EXPERT MEDICAL HAIR RESTORATION - {maturity_level} SIMULATION
+    prompt = f"""PRECISE HAIR RESTORATION - {maturity_level}
 
-MISSION: Generate DRAMATICALLY VISIBLE HAIR REGROWTH with ENHANCED {timeframe.upper()} PARAMETERS
+MISSION: Create spiky, short-length hair growth matching existing style
 
 {coord_prompt}
 
-🚀 ENHANCED {timeframe_key.upper()} SPECIFICATIONS - MAXIMUM VISIBILITY:
-✅ MATURITY LEVEL: {maturity_level}
-✅ EFFECTIVE DENSITY: {hair_density * 100:.1f}% × {base_multiplier}x × {density_boost}x = {effective_percentage:.0f}% TOTAL COVERAGE
-✅ VISIBILITY REQUIREMENT: {visibility_req} - Patient MUST see dramatic change
-✅ THICKNESS ENHANCEMENT: {density_boost}x multiplier for MAXIMUM strand visibility
-✅ GROWTH STAGE: {growth_type}
+🌱 {timeframe_key.upper()} STYLE SPECIFICATIONS:
+✅ STYLE TYPE: Short, spiky hair with natural lift
+✅ DENSITY: {hair_density * 100:.1f}% coverage distributed like reference
+✅ LENGTH: Short to medium-short length (1-2 inches)
+✅ DIRECTION: Forward and slightly downward flow
+✅ TEXTURE: Spiky, textured appearance with natural lift
 
-🎯 MANDATORY HAIR CHARACTERISTICS:
-• COLOR: {color_desc} (100% compliance required)
-• TEXTURE: {texture_desc} (exact pattern match required)  
-• DENSITY: {effective_percentage:.0f}% effective coverage (non-negotiable minimum)
-• STRAND QUALITY: Each hair must be CLEARLY DISTINGUISHABLE from scalp
-• VISUAL IMPACT: Generate hair that is IMPOSSIBLE TO MISS
+🎯 PRECISE STYLE MATCH:
+• STYLING: Short, spiky texture with natural volume
+• COLOR: {color_desc} matching existing hair exactly
+• TEXTURE: Individual spiky strands with natural lift
+• MOVEMENT: Forward-flowing with slight downward angle
+• DISTRIBUTION: Natural coverage focusing on hairline and temples
 
-⚡ CRITICAL {timeframe.upper()} REQUIREMENTS:
-1. ENHANCED VISIBILITY: Every generated hair strand must be CLEARLY VISIBLE
-2. DRAMATIC CONTRAST: Use optimal lighting/shadowing for maximum hair-scalp distinction
-3. THICKNESS BOOST: Apply {density_boost}x thickness enhancement for visibility
-4. COLOR PRECISION: Every strand must match {color_desc} exactly
-5. TEXTURE ACCURACY: All hair must exhibit {texture_desc} precisely
-6. BOUNDARY COMPLIANCE: Generate ONLY within marked coordinate areas
-7. DENSITY ACHIEVEMENT: Must achieve minimum {effective_percentage:.0f}% coverage
-8. {"EARLY STAGE IMPACT" if timeframe == "3months" else "MATURE COMPLETION"}: Show appropriate {timeframe} development
+⚡ STYLE REQUIREMENTS:
+1. SPIKY TEXTURE: Create distinct, spiky strands like reference
+2. NATURAL LIFT: Add slight volume and lift at hairline
+3. FORWARD FLOW: Maintain forward-angled hair direction
+4. PRECISE LENGTH: Keep hair short (1-2 inches) throughout
+5. EXACT COLOR: Match existing {color_desc} perfectly
+6. STYLE MATCH: Replicate spiky, textured look of reference
+7. HAIRLINE FOCUS: Emphasize natural M-shaped pattern
+8. {"EARLY TEXTURE" if timeframe == "3months" else "FULL STYLE"}: Show {timeframe} progression
 
-GENERATION COMMAND: Execute {maturity_level} with ENHANCED visibility parameters:
-- Target Density: {effective_percentage:.0f}%
-- Enhancement Level: {base_multiplier}x base + {density_boost}x thickness
-- Visibility Mode: MAXIMUM_DRAMATIC_IMPACT
-- Quality Standard: {visibility_req}"""
+STYLE EXECUTION:
+- Generate short, spiky hair texture
+- Maintain {effective_percentage:.0f}% density with spiky distribution
+- Create forward-angled hair direction
+- Match existing hair color exactly
+- Focus on natural M-shaped hairline pattern
+- Ensure consistent short length (1-2 inches)
+- Add natural lift and volume at hairline
+- Keep individual spiky strands visible"""
 
     logger.info(f"PROMPT-{request_id}: Generated ENHANCED {timeframe} prompt")
     logger.info(f"  - Effective Density: {effective_percentage:.0f}% (Enhanced multipliers)")
@@ -413,41 +417,26 @@ def build_mask_based_hairline_prompt(timeframe: str, hair_density: float, hair_t
     try:
         hair_density = max(0.1, min(1.0, hair_density))
         
-        # FIXED: For Crown/Full Scalp/Mid Crown - use EXACT density without multipliers
-        if pattern_type in ["Crown", "Mid Crown", "Full Scalp"]:
-            enhancement_multiplier = 1.0    # NO ENHANCEMENT - use exact density
-            density_multiplier = 1.0        # NO MULTIPLIER - use exact density
-            
-            if timeframe in ["3months", "3 months"]:
-                maturity_desc = "EARLY GROWTH STAGE"
-                result_desc = "emerging hair with natural early growth characteristics"
-                visibility_requirement = "NATURAL_EARLY_GROWTH"
-                strand_requirement = "Natural early-stage hair development"
-                color_variation = "slightly lighter new growth color intensity"
-            else:
-                maturity_desc = "MATURE GROWTH STAGE"
-                result_desc = "fully established hair with complete maturity"
-                visibility_requirement = "MATURE_COMPLETE_GROWTH" 
-                strand_requirement = "Full mature hair development"
-                color_variation = "full mature hair color intensity"
+        # FIXED: Use exact input density with correct timeframe progression
+        if timeframe in ["3months", "3 months"]:
+            # For 3 months: Increase input density by 25% (realistic early growth)
+            enhancement_multiplier = 1.25    # Realistic 25% increase from input
+            density_multiplier = 1.0        # No additional boost
+            maturity_desc = "EARLY GROWTH STAGE"
+            result_desc = "emerging hair with natural early growth characteristics"
+            visibility_requirement = "NATURAL_EARLY_GROWTH"
+            strand_requirement = "Natural early-stage hair development"
+            color_variation = "slightly lighter new growth color intensity"
         else:
-            # For other patterns (like FreeMark), keep existing enhancement logic
-            if timeframe in ["3months", "3 months"]:
-                enhancement_multiplier = 3.5
-                density_multiplier = 2.2
-                maturity_desc = "ULTRA-EXTREME EARLY VISIBILITY"
-                result_desc = "IMPOSSIBLE-TO-MISS early hair with MAXIMUM thickness"
-                visibility_requirement = "EXTREME_EARLY_TRANSFORMATION"
-                strand_requirement = "EVERY STRAND MUST BE CLEARLY VISIBLE"
-                color_variation = "enhanced color intensity for visibility"
-            else:
-                enhancement_multiplier = 3.0
-                density_multiplier = 2.0
-                maturity_desc = "MAXIMUM MATURE RESTORATION"
-                result_desc = "COMPLETE TRANSFORMATION with EXTREME thickness"
-                visibility_requirement = "TOTAL_TRANSFORMATION"
-                strand_requirement = "MAXIMUM DENSITY AND VISIBILITY"
-                color_variation = "maximum mature color intensity"
+            # For 8 months: More realistic growth progression
+            
+            enhancement_multiplier = 1.38   # More realistic 8-month growth
+            density_multiplier = 1.0        # No additional boost
+            maturity_desc = "MATURE GROWTH STAGE"
+            result_desc = "fully established hair with complete maturity"
+            visibility_requirement = "MATURE_COMPLETE_GROWTH" 
+            strand_requirement = "Full mature hair development"
+            color_variation = "full mature hair color intensity"
 
         # Enhanced color mapping with timeframe variations
         if pattern_type in ["Crown", "Mid Crown", "Full Scalp"]:
@@ -794,19 +783,21 @@ def build_freemark_generation_prompt(coordinates_data: dict, timeframe: str,
     
     coord_prompt = format_coordinates_for_prompt(coordinates_data, request_id)
     
-    # Hair density progression from 3 to 8 months
+    # Hair density progression with realistic early growth
     if timeframe in ["3months", "3 months"]:
-        base_multiplier = 1.5       # Lower for early stage
-        density_boost = 1.3         # Reduced density for initial growth
-        visibility_req = "INITIAL_GROWTH_PHASE"
-        maturity_level = "EARLY REGROWTH WITH VISIBLE SCALP"
-        growth_type = "EMERGING, DEVELOPING hair with visible scalp integration"
+        # For 3 months: Show subtle initial growth
+        base_multiplier = 1.25      # Realistic 3-month growth
+        density_boost = 1.0         # No additional boost
+        visibility_req = "SUBTLE_INITIAL_GROWTH"
+        maturity_level = "EARLY REGROWTH PHASE"
+        growth_type = "Fine, short initial hair growth with subtle appearance"
     else:
-        base_multiplier = 3.5       # Increased for full coverage
-        density_boost = 3.0         # Maximum density for mature growth
-        visibility_req = "COMPLETE_COVERAGE_TRANSFORMATION"
-        maturity_level = "FULL MATURE COVERAGE"
-        growth_type = "DENSE, FULLY ESTABLISHED hair with maximum coverage"
+        # For 8 months: Show fuller established growth
+        base_multiplier = 1.25       # Realistic 8-month growth
+        density_boost = 1.0         # No additional boost
+        visibility_req = "COMPLETE_COVERAGE"
+        maturity_level = "FULL MATURE GROWTH"
+        growth_type = "Established, fuller hair coverage with natural thickness"
 
     # Enhanced color descriptions
     color_mapping = {
@@ -1650,20 +1641,13 @@ async def detect_face_endpoint(image: UploadFile = File(...)):
         detection_result = detect_face_with_mediapipe(image_data, request_id)
         
         pattern_result = None
-        half_bald_analysis = None
         if detection_result["face_detected"]:
             pattern_result = generate_hairlines_and_scalp_regions(
                 image_data, detection_result["face_bounds"], request_id
             )
             
-            # ENHANCED: Add half-bald pattern analysis
-            half_bald_analysis = detect_half_bald_pattern(
-                image_data, detection_result["face_bounds"], request_id
-            )
             
-            if half_bald_analysis and not half_bald_analysis.get("error"):
-                logger.info(f"DETECT-{request_id}: Half-bald analysis: {half_bald_analysis['pattern_type']}, Enhancement: {half_bald_analysis['recommended_enhancement']}")
-        
+            
         response_data = {
             "request_id": request_id,
             "filename": image.filename,
@@ -1674,7 +1658,6 @@ async def detect_face_endpoint(image: UploadFile = File(...)):
                 "Hairline", "Crown", "Mid Crown", "Full Scalp", "FreeMark"
             ],
             "patterns": pattern_result,
-            "half_bald_analysis": half_bald_analysis,  # ENHANCED: Include half-bald analysis
             "image_info": {
                 "size_kb": f"{len(image_data) / 1024:.1f}",
                 "content_type": image.content_type
@@ -2027,102 +2010,6 @@ def generate_hairline_coordinates_from_face_detection(image_width: int, image_he
     except Exception as e:
         logger.error(f"HAIRLINE-COORDS-{request_id}: Error generating coordinates: {str(e)}")
         return {"error": f"Failed to generate hairline coordinates: {str(e)}"}
-
-def detect_half_bald_pattern(image_data: bytes, face_bounds: dict, request_id: str = "") -> dict:
-    """Detect half-bald patterns and suggest optimal generation strategy"""
-    logger.info(f"HALF-BALD-{request_id}: Analyzing hair loss pattern...")
-    
-    try:
-        nparr = np.frombuffer(image_data, np.uint8)
-        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        
-        if image is None:
-            return {"error": "Could not decode image for half-bald analysis"}
-        
-        h, w, _ = image.shape
-        
-        # Define scalp regions based on face bounds
-        face_top = int(face_bounds["top"])
-        face_width = int(face_bounds["width"])
-        face_center_x = int(face_bounds["center_x"])
-        
-        # Analyze different scalp regions
-        regions = {
-            "hairline": (0, max(0, face_top - 60), w, face_top),
-            "crown": (face_center_x - face_width//3, max(0, face_top - face_width//2), 
-                     face_center_x + face_width//3, face_top),
-            "temples": [(0, face_top - 40, face_width//4, face_top + 20),
-                       (w - face_width//4, face_top - 40, w, face_top + 20)]
-        }
-        
-        hair_analysis = {}
-        
-        for region_name, bounds in regions.items():
-            if region_name == "temples":
-                # Analyze both temples
-                temple_scores = []
-                for i, temple_bounds in enumerate(bounds):
-                    x1, y1, x2, y2 = temple_bounds
-                    roi = image[max(0, y1):min(h, y2), max(0, x1):min(w, x2)]
-                    if roi.size > 0:
-                        score = analyze_hair_density_in_region(roi)
-                        temple_scores.append(score)
-                hair_analysis[region_name] = sum(temple_scores) / len(temple_scores) if temple_scores else 0
-            else:
-                x1, y1, x2, y2 = bounds
-                roi = image[max(0, y1):min(h, y2), max(0, x1):min(w, x2)]
-                if roi.size > 0:
-                    hair_analysis[region_name] = analyze_hair_density_in_region(roi)
-                else:
-                    hair_analysis[region_name] = 0
-        
-        # Determine half-bald pattern
-        avg_density = sum(hair_analysis.values()) / len(hair_analysis)
-        is_half_bald = avg_density < 0.3  # Threshold for sparse hair
-        
-        pattern_type = "normal"
-        if is_half_bald:
-            if hair_analysis["hairline"] < 0.2:
-                pattern_type = "receding_hairline"
-            elif hair_analysis["crown"] < 0.2:
-                pattern_type = "crown_thinning"
-            elif hair_analysis["temples"] < 0.2:
-                pattern_type = "temple_recession"
-            else:
-                pattern_type = "diffuse_thinning"
-        
-        logger.info(f"HALF-BALD-{request_id}: Pattern detected: {pattern_type}, Average density: {avg_density:.2f}")
-        
-        return {
-            "is_half_bald": bool(is_half_bald),
-            "pattern_type": pattern_type,
-            "average_density": float(avg_density),
-            "region_analysis": {k: float(v) for k, v in hair_analysis.items()},
-            "recommended_enhancement": "aggressive" if is_half_bald else "standard"
-        }
-        
-    except Exception as e:
-        logger.error(f"HALF-BALD-{request_id}: Analysis error: {str(e)}")
-        return {"error": f"Half-bald analysis failed: {str(e)}"}
-
-def analyze_hair_density_in_region(roi_image):
-    """Analyze hair density in a region of interest"""
-    if roi_image.size == 0:
-        return 0
-    
-    # Convert to grayscale
-    gray = cv2.cvtColor(roi_image, cv2.COLOR_BGR2GRAY)
-    
-    # Use texture analysis to detect hair
-    # Hair typically has more texture/variation than scalp
-    laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
-    
-    # Normalize the variance to a 0-1 scale (higher = more hair-like texture)
-    # These thresholds are empirically determined
-    if laplacian_var > 500:
-        return min(1.0, laplacian_var / 1000)
-    else:
-        return laplacian_var / 500
 
 if __name__ == "__main__":
     logger.info("STARTUP: Starting Hair Growth API - Consolidated Individual Endpoint")
