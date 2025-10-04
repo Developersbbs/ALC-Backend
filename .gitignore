@@ -6,3 +6,4 @@ detections/
 saved_settings/
 image_logs/
 *.pyc
+.env

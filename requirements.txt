@@ -17,6 +17,7 @@ numpy==1.24.4
 # Additional FastAPI dependencies
 python-multipart==0.0.6
 
+replicate==0.32.1
 # Optional: For better logging and debugging
 colorlog==6.8.0
 

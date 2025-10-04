@@ -49,47 +49,40 @@
     "mask_based_generation": {
       "system_role": "Professional hair restoration specialist with medical imaging expertise",
       "base_instruction": "PROFESSIONAL HAIR RESTORATION - MASK-GUIDED HAIR GROWTH",
-      "task": "Generate realistic hair growth in specific regions using mask guidance",
-      "region_focus": {
-        "Hairline": {
-          "description": "Focus on hairline restoration with natural hairline patterns",
-          "enhancement_multiplier": 2.2,
-          "specific_instructions": "Follow natural hairline patterns, respect facial proportions and symmetry, create age-appropriate hairline shape"
-        },
-        "Crown": {
-          "description": "Focus on crown area restoration with radial growth patterns",
-          "enhancement_multiplier": 1.8,
-          "specific_instructions": "Create radial crown growth patterns, focus on central scalp coverage, maintain natural whorl patterns"
-        },
-        "Mid Crown": {
-          "description": "Focus on mid-crown area with targeted coverage",
-          "enhancement_multiplier": 1.9,
-          "specific_instructions": "Target mid-crown thinning areas, create natural transition zones, maintain scalp coverage continuity"
-        },
-        "Full Scalp": {
-          "description": "Comprehensive scalp coverage restoration",
-          "enhancement_multiplier": 2.0,
-          "specific_instructions": "Complete scalp restoration, maintain natural growth directions, create comprehensive coverage"
-        },
-        "FreeMark": {
-          "description": "User-defined marking areas with coordinate-based generation",
-          "enhancement_multiplier": 1.7,
-          "specific_instructions": "Follow user-marked areas precisely, respect coordinate boundaries, apply priority-based density"
-        }
-      },
       "timeframe_specs": {
         "3months": {
           "enhancement_multiplier": 1.25,
           "maturity": "Early visible regrowth stage",
-          "description": "SUBTLE DENSITY for realistic early results",
           "visibility_focus": "NATURAL VISIBILITY - patient should see subtle but real progress",
           "generation_text": "Generate SUBTLE 3-month hair restoration progress with NATURAL early growth"
         },
         "8months": {
           "enhancement_multiplier": 1.5,
-          "maturity": "Mature established growth stage",
-"description": "SUBTLE DENSITY for realistic restoration results",          "visibility_focus": "REALISTIC IMPROVEMENT - show natural hair recovery results",
-          "generation_text": "Generate NATURAL 8-month hair restoration with REALISTIC, MATURE hair coverage"
+          "maturity": "8-MONTH MATURE GROWTH",
+          "visibility_focus": "NATURAL VISIBILITY",
+          "generation_text": "Generate natural 8-month hair restoration"
+        }
+      },
+      "region_focus": {
+        "Crown": {
+          "description": "Focus on crown area restoration with radial growth patterns",
+          "enhancement_multiplier": 1.5,
+          "specific_instructions": "Create radial crown growth patterns, focus on central scalp coverage, maintain natural whorl patterns"
+        },
+        "Full Scalp": {
+          "description": "Focus on full scalp restoration",
+          "enhancement_multiplier": 1.5,
+          "specific_instructions": "Cover entire scalp area with natural hair distribution"
+        },
+        "Mid Crown": {
+          "description": "Focus on mid-crown area restoration",
+          "enhancement_multiplier": 1.5,
+          "specific_instructions": "Target mid-crown region with natural hair patterns"
+        },
+        "FreeMark": {
+          "description": "User-defined marking areas with coordinate-based generation",
+          "enhancement_multiplier": 1.7,
+          "specific_instructions": "Follow user-marked areas precisely, respect coordinate boundaries, apply priority-based density"
         }
       },
       "mask_interpretation": {
@@ -104,34 +97,34 @@
           ]
         },
         "black_areas": {
-          "description": "MINIMAL HAIR GROWTH ZONES (generate VERY LIGHT hair here)",
-          "density_percentage": "15-20",
+          "description": "NO HAIR GROWTH ZONES (preserve original image)",
+          "density_percentage": 0,
           "characteristics": [
-            "15-20% MINIMAL hair generation in black pixels",
-            "VERY LIGHT density and thickness in black regions",
-            "BARELY VISIBLE hair growth - extremely subtle",
-            "MINIMAL SUPPORTING HAIR RESTORATION AREAS"
+            "0% NO hair generation in black pixels",
+            "Preserve original image exactly in black regions",
+            "NO hair growth - keep completely unchanged",
+            "SACRED AREAS - do not modify"
           ]
         }
       },
       "generation_steps": [
         "EXAMINE Image 2 (the mask) - identify WHITE and BLACK regions for different hair densities",
         "GENERATE MAXIMUM thick, dense hair in WHITE masked regions (100% density)",
-        "GENERATE MINIMAL very light hair in BLACK masked regions (15-20% density)",
-        "CREATE natural color with shine - WHITE areas VERY VISIBLE, BLACK areas BARELY NOTICEABLE",
+        "GENERATE NO hair in BLACK masked regions (0% density)",
+        "CREATE natural color with shine - WHITE areas VERY VISIBLE, BLACK areas UNCHANGED",
         "ENSURE full density coverage in WHITE regions - GO AGGRESSIVE",
-        "ENSURE 15-20% density coverage in BLACK regions - MINIMAL growth",
-        "MAINTAIN natural hair growth direction in BOTH WHITE and BLACK areas",
-        "CREATE CLEAR contrast - WHITE areas should have SIGNIFICANTLY more hair than BLACK"
+        "ENSURE 0% density in BLACK regions - NO growth",
+        "MAINTAIN natural hair growth direction in WHITE areas",
+        "CREATE CLEAR contrast - WHITE areas should have SIGNIFICANTLY more hair than BLACK (which has none)"
       ],
       "success_factors": [
         "Generate EXTREMELY VISIBLE, THICK hair growth in ALL WHITE masked areas",
-        "Generate MINIMAL, VERY LIGHT hair growth in ALL BLACK masked areas",
-        "Create STRONG difference between WHITE (maximum hair) and BLACK (minimal hair) regions",
+        "Generate NO hair growth in ALL BLACK masked regions",
+        "Create STRONG difference between WHITE (maximum hair) and BLACK (no hair) regions",
         "WHITE areas must have MAXIMUM hair density - make it VERY obvious",
-        "BLACK areas must have MINIMAL hair density (15-20%) - barely noticeable",
-        "Natural hair texture and realistic appearance in BOTH areas",
-        "Consistent hair coloring throughout new hair in BOTH regions",
+        "BLACK areas must have NO hair density (0%) - completely preserved",
+        "Natural hair texture and realistic appearance in WHITE areas",
+        "Consistent hair coloring in new hair",
         "Professional hair restoration quality with CLEAR density contrast"
       ]
     }
